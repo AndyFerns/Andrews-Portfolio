@@ -1,0 +1,435 @@
+/**
+ * ============================================================================
+ * ANIMATIONS.CSS - Scroll Animations & Transitions
+ * ============================================================================
+ * 
+ * Performance-conscious animations using:
+ * - CSS transforms (GPU accelerated)
+ * - Intersection Observer triggers
+ * - Reduced motion support
+ * 
+ * ============================================================================
+ */
+
+/* ============================================================================
+   KEYFRAME ANIMATIONS
+   ============================================================================ */
+
+/* Fade in from bottom */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade in from left */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Fade in from right */
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale in */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Gentle float - for decorative elements */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Pulse - for CTAs */
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 14px rgba(255, 105, 120, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 4px 20px rgba(255, 105, 120, 0.5);
+    }
+}
+
+/* Typing cursor blink */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ============================================================================
+   SCROLL REVEAL CLASSES
+   ============================================================================
+   Elements with these classes start invisible and animate in when 
+   they enter the viewport (triggered by Intersection Observer in JS)
+*/
+
+/* Base state - hidden and ready for animation */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
+}
+
+/* Visible state - triggered by JS */
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation variants */
+.animate-fade-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-fade-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.animate-fade-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-fade-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.animate-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-scale.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ============================================================================
+   STAGGERED ANIMATIONS
+   ============================================================================
+   For lists and grids - each item animates slightly after the previous
+*/
+
+.stagger-children>* {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.stagger-children.visible>*:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.stagger-children.visible>*:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.stagger-children.visible>*:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.stagger-children.visible>*:nth-child(4) {
+    transition-delay: 0.4s;
+}
+
+.stagger-children.visible>*:nth-child(5) {
+    transition-delay: 0.5s;
+}
+
+.stagger-children.visible>*:nth-child(6) {
+    transition-delay: 0.6s;
+}
+
+.stagger-children.visible>*:nth-child(7) {
+    transition-delay: 0.7s;
+}
+
+.stagger-children.visible>*:nth-child(8) {
+    transition-delay: 0.8s;
+}
+
+.stagger-children.visible>* {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================================================
+   HERO ANIMATIONS
+   ============================================================================ */
+
+.hero-greeting {
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+}
+
+.hero-name {
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.4s;
+    opacity: 0;
+}
+
+.hero-tagline {
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+}
+
+.hero-cta {
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.8s;
+    opacity: 0;
+}
+
+.hero-image-wrapper {
+    animation: scaleIn 0.8s ease forwards;
+    animation-delay: 0.4s;
+    opacity: 0;
+}
+
+/* ============================================================================
+   HOVER MICRO-INTERACTIONS
+   ============================================================================ */
+
+/* Lift effect for cards */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+/* Glow effect for buttons */
+.hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 105, 120, 0.4);
+}
+
+/* Scale effect for icons */
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.1);
+}
+
+/* ============================================================================
+   BUTTON ANIMATIONS
+   ============================================================================ */
+
+/* Ripple effect for buttons */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Primary button pulse animation */
+.btn-primary {
+    animation: pulse 2s infinite;
+}
+
+.btn-primary:hover {
+    animation: none;
+}
+
+/* ============================================================================
+   SCROLL INDICATOR
+   ============================================================================ */
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    animation: float 2s ease-in-out infinite;
+}
+
+.scroll-indicator svg {
+    width: 24px;
+    height: 24px;
+    animation: float 1.5s ease-in-out infinite;
+}
+
+/* ============================================================================
+   TYPING CURSOR
+   ============================================================================ */
+
+.typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background-color: var(--accent-primary);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+}
+
+/* ============================================================================
+   SECTION TRANSITIONS
+   ============================================================================ */
+
+section {
+    position: relative;
+}
+
+/* Gradient fade between sections */
+section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, var(--bg-primary));
+    pointer-events: none;
+    opacity: 0;
+}
+
+section:nth-of-type(odd)::after {
+    background: linear-gradient(to bottom, transparent, var(--bg-secondary));
+}
+
+/* ============================================================================
+   LOADING ANIMATIONS
+   ============================================================================ */
+
+.repos-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+}
+
+.repos-loading p {
+    color: var(--text-muted);
+    animation: pulse 1.5s ease infinite;
+}
+
+/* Skeleton loading for repo cards */
+.repo-skeleton {
+    height: 150px;
+    border-radius: 12px;
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ============================================================================
+   Respects user's motion preferences
+*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .animate-on-scroll,
+    .animate-fade-left,
+    .animate-fade-right,
+    .animate-scale,
+    .stagger-children>* {
+        opacity: 1;
+        transform: none;
+    }
+
+    .hero-greeting,
+    .hero-name,
+    .hero-tagline,
+    .hero-cta,
+    .hero-image-wrapper {
+        opacity: 1;
+        animation: none;
+    }
+}

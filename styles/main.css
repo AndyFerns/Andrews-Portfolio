@@ -1,0 +1,525 @@
+/**
+ * ============================================================================
+ * MAIN.CSS - Base Styles, Typography & Layout
+ * ============================================================================
+ * 
+ * This file contains:
+ * - CSS Reset
+ * - Typography system
+ * - Layout utilities
+ * - Section spacing
+ * - Responsive breakpoints
+ * 
+ * CUSTOMIZATION:
+ * - Font sizes use a modular scale (1.25 ratio)
+ * - Spacing uses an 8px base unit
+ * - Container max-width is 1200px (adjustable)
+ * 
+ * ============================================================================
+ */
+
+/* ============================================================================
+   CSS RESET
+   ============================================================================
+   Modern CSS reset for consistent cross-browser styling.
+*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    /* Smooth scrolling for anchor links */
+    scroll-behavior: smooth;
+
+    /* Prevent font size inflation on mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100vh;
+    line-height: 1.6;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+
+    /* Optimize text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Remove default list styles */
+ul,
+ol {
+    list-style: none;
+}
+
+/* Make images responsive by default */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Remove default button/input styling */
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+/* Remove default link styling */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ============================================================================
+   TYPOGRAPHY
+   ============================================================================
+   Modular scale with 1.25 ratio.
+   Base: 16px (1rem)
+*/
+
+/* Font imports are in index.html for better loading */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+}
+
+/* Heading sizes using modular scale (1.25 ratio) */
+h1 {
+    font-size: clamp(2.5rem, 5vw, 3.815rem);
+    /* ~61px max */
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3.052rem);
+    /* ~49px max */
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2.441rem);
+    /* ~39px max */
+}
+
+h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.953rem);
+    /* ~31px max */
+}
+
+h5 {
+    font-size: clamp(1.1rem, 2vw, 1.563rem);
+    /* ~25px max */
+}
+
+h6 {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    /* ~20px max */
+}
+
+/* Body text */
+p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Lead paragraph - for intro text */
+.lead {
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+/* Small text */
+small,
+.text-small {
+    font-size: 0.875rem;
+}
+
+/* Code text - uses JetBrains Mono */
+code,
+pre,
+.mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+code {
+    padding: 0.2em 0.4em;
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+pre {
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+pre code {
+    padding: 0;
+    background: none;
+}
+
+/* Links */
+a:not(.btn) {
+    color: var(--accent-secondary);
+    transition: color 0.2s ease;
+}
+
+a:not(.btn):hover {
+    color: var(--accent-secondary-hover);
+}
+
+/* Strong/emphasis */
+strong,
+b {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ============================================================================
+   LAYOUT UTILITIES
+   ============================================================================
+*/
+
+/* Main container - centers content with max-width */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Narrower container for text-heavy sections */
+.container-narrow {
+    max-width: 800px;
+}
+
+/* Full-width container */
+.container-wide {
+    max-width: 1400px;
+}
+
+/* Flexbox utilities */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-1 {
+    gap: 0.5rem;
+}
+
+.gap-2 {
+    gap: 1rem;
+}
+
+.gap-3 {
+    gap: 1.5rem;
+}
+
+.gap-4 {
+    gap: 2rem;
+}
+
+/* Grid utilities */
+.grid {
+    display: grid;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive grid - auto-fit with minimum */
+.grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* ============================================================================
+   SECTION SPACING
+   ============================================================================
+   Consistent vertical rhythm using 8px base unit.
+*/
+
+section {
+    padding: 5rem 0;
+    position: relative;
+}
+
+/* Alternate section backgrounds for visual separation */
+section:nth-of-type(even) {
+    background-color: var(--bg-secondary);
+}
+
+/* Section titles */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+/* Decorative underline for section titles */
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--gradient-accent);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ============================================================================
+   SPACING UTILITIES
+   ============================================================================
+   Based on 8px (0.5rem) unit
+*/
+
+/* Margin utilities */
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+.mt-5 {
+    margin-top: 3rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+    margin-bottom: 1rem;
+}
+
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.mb-5 {
+    margin-bottom: 3rem;
+}
+
+/* Text alignment */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* ============================================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================================
+   Mobile-first approach.
+   
+   Breakpoints:
+   - sm: 640px
+   - md: 768px
+   - lg: 1024px
+   - xl: 1280px
+*/
+
+/* Tablet and below */
+@media (max-width: 768px) {
+    section {
+        padding: 3rem 0;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+/* Tablet */
+@media (min-width: 640px) and (max-width: 1023px) {
+
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .hide-desktop {
+        display: none !important;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================
+*/
+
+/* Focus styles for keyboard navigation */
+:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 2rem;
+    background: var(--accent-primary);
+    color: var(--text-inverse);
+    z-index: 10000;
+    border-radius: 4px;
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================================================
+   SELECTION STYLING
+   ============================================================================
+*/
+::selection {
+    background-color: var(--accent-primary);
+    color: var(--text-inverse);
+}
+
+::-moz-selection {
+    background-color: var(--accent-primary);
+    color: var(--text-inverse);
+}
+
+/* ============================================================================
+   SCROLLBAR STYLING
+   ============================================================================
+*/
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}

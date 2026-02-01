@@ -1,0 +1,148 @@
+/**
+ * ============================================================================
+ * THEMES.CSS - Color System & Theme Variables
+ * ============================================================================
+ * 
+ * This file defines the complete color system for the portfolio.
+ * Two themes are available: Dark (default) and Light.
+ * 
+ * COLOR PALETTE (Mandatory):
+ * - #a9b18f (Dry Sage)      → Text secondary, subtle elements
+ * - #ff6978 (Bubblegum Pink) → Primary accent, CTAs
+ * - #214e34 (Dark Spruce)   → Dark theme background
+ * - #d4c2fc (Periwinkle)    → Secondary accent, links
+ * - #ebd2b4 (Pale Oak)      → Light text, light theme background base
+ * 
+ * HOW TO CUSTOMIZE:
+ * - To adjust colors, modify the CSS custom properties below
+ * - All components use these variables, so changes propagate automatically
+ * - Test both themes after making changes
+ * 
+ * ============================================================================
+ */
+
+/* ============================================================================
+   ROOT VARIABLES - Dark Theme (Default)
+   ============================================================================
+   Dark theme uses Dark Spruce as the primary background with Pale Oak text.
+   This creates a sophisticated, developer-friendly aesthetic.
+*/
+:root {
+    /* === Background Colors === */
+    --bg-primary: #214e34;           /* Dark Spruce - Main background */
+    --bg-secondary: #1a3d29;         /* Darker Spruce - Cards, elevated surfaces */
+    --bg-tertiary: #153122;          /* Deepest Spruce - Footer, deep sections */
+    --bg-overlay: rgba(26, 61, 41, 0.95); /* Overlay for modals/menus */
+    
+    /* === Text Colors === */
+    --text-primary: #ebd2b4;         /* Pale Oak - Headings, main body */
+    --text-secondary: #a9b18f;       /* Dry Sage - Subtitles, metadata */
+    --text-muted: #7a8a6d;           /* Muted Sage - Placeholders, disabled */
+    --text-inverse: #214e34;         /* For text on light backgrounds */
+    
+    /* === Accent Colors === */
+    --accent-primary: #ff6978;       /* Bubblegum Pink - CTAs, highlights */
+    --accent-primary-hover: #ff8a95; /* Lighter pink for hover states */
+    --accent-primary-active: #e55766;/* Darker pink for active states */
+    --accent-secondary: #d4c2fc;     /* Periwinkle - Links, secondary actions */
+    --accent-secondary-hover: #e2d5ff;/* Lighter periwinkle for hover */
+    
+    /* === UI Element Colors === */
+    --border-color: rgba(169, 177, 143, 0.2);  /* Subtle borders */
+    --border-color-strong: rgba(169, 177, 143, 0.4); /* Emphasized borders */
+    --shadow-color: rgba(0, 0, 0, 0.3);        /* Drop shadows */
+    --highlight-bg: rgba(255, 105, 120, 0.1);  /* Subtle highlight background */
+    
+    /* === Gradient Definitions === */
+    --gradient-primary: linear-gradient(135deg, #214e34 0%, #1a3d29 100%);
+    --gradient-accent: linear-gradient(135deg, #ff6978 0%, #d4c2fc 100%);
+    --gradient-hero: linear-gradient(180deg, #214e34 0%, #1a3d29 50%, #153122 100%);
+    
+    /* === Code/Tech Styling === */
+    --code-bg: rgba(169, 177, 143, 0.15);
+    --code-text: #d4c2fc;
+    
+    /* === Skill Tag Colors (by category) === */
+    --skill-languages: rgba(255, 105, 120, 0.2);
+    --skill-frameworks: rgba(212, 194, 252, 0.2);
+    --skill-databases: rgba(169, 177, 143, 0.2);
+    --skill-tools: rgba(235, 210, 180, 0.2);
+    --skill-os: rgba(255, 105, 120, 0.15);
+    
+    /* === Theme Toggle Icon === */
+    --theme-icon-color: var(--text-primary);
+    --theme-icon-bg: var(--bg-secondary);
+}
+
+/* ============================================================================
+   LIGHT THEME
+   ============================================================================
+   Light theme inverts the palette, using Pale Oak derivatives as background
+   and Dark Spruce for text. Maintains visual harmony through color theory.
+*/
+[data-theme="light"] {
+    /* === Background Colors === */
+    --bg-primary: #f7efe6;           /* Pale Oak Light - Main background */
+    --bg-secondary: #ffffff;         /* Pure white - Cards */
+    --bg-tertiary: #eee4d8;          /* Warmer cream - Footer, sections */
+    --bg-overlay: rgba(247, 239, 230, 0.95);
+    
+    /* === Text Colors === */
+    --text-primary: #214e34;         /* Dark Spruce - Headings */
+    --text-secondary: #3d6b4f;       /* Medium Spruce - Body text */
+    --text-muted: #6b8f7a;           /* Light Spruce - Metadata */
+    --text-inverse: #ebd2b4;         /* For text on dark backgrounds */
+    
+    /* === Accent Colors (maintained for consistency) === */
+    --accent-primary: #e5505f;       /* Slightly deeper pink for contrast */
+    --accent-primary-hover: #ff6978;
+    --accent-primary-active: #cc4554;
+    --accent-secondary: #7c5cbf;     /* Deep Periwinkle for visibility */
+    --accent-secondary-hover: #9474d4;
+    
+    /* === UI Element Colors === */
+    --border-color: rgba(33, 78, 52, 0.1);
+    --border-color-strong: rgba(33, 78, 52, 0.2);
+    --shadow-color: rgba(33, 78, 52, 0.1);
+    --highlight-bg: rgba(255, 105, 120, 0.08);
+    
+    /* === Gradient Definitions === */
+    --gradient-primary: linear-gradient(135deg, #f7efe6 0%, #ffffff 100%);
+    --gradient-accent: linear-gradient(135deg, #ff6978 0%, #d4c2fc 100%);
+    --gradient-hero: linear-gradient(180deg, #f7efe6 0%, #ffffff 50%, #eee4d8 100%);
+    
+    /* === Code/Tech Styling === */
+    --code-bg: rgba(33, 78, 52, 0.08);
+    --code-text: #7c5cbf;
+    
+    /* === Skill Tag Colors (adjusted for light bg) === */
+    --skill-languages: rgba(229, 80, 95, 0.15);
+    --skill-frameworks: rgba(124, 92, 191, 0.15);
+    --skill-databases: rgba(61, 107, 79, 0.15);
+    --skill-tools: rgba(33, 78, 52, 0.1);
+    --skill-os: rgba(229, 80, 95, 0.1);
+}
+
+/* ============================================================================
+   THEME TRANSITION
+   ============================================================================
+   Smooth transitions when switching between themes.
+   Applied to all elements that use theme variables.
+*/
+*,
+*::before,
+*::after {
+    transition: 
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Disable transitions on page load to prevent flash */
+.no-transition,
+.no-transition *,
+.no-transition *::before,
+.no-transition *::after {
+    transition: none !important;
+}
