@@ -2,7 +2,7 @@
 
 A production-ready personal portfolio website showcasing AI/ML, systems programming, and full-stack development skills. Built with vanilla HTML, CSS, and JavaScript for maximum compatibility with GitHub Pages.
 
-![Portfolio Preview](https://via.placeholder.com/800x400/214e34/ebd2b4?text=Andrew+Fernandes+Portfolio)
+![Portfolio Preview](https://andyferns.github.io/Andrews-Portfolio/)
 
 ## 🚀 Features
 
