@@ -27,6 +27,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!--
+    Runs before the stylesheets so there is no flash and no layout shift:
+    1. `js` on <html> is what unlocks the scroll-reveal start states. Without
+       it (JS disabled) nothing is ever hidden and the page is plain static
+       content.
+    2. Resolving the theme here rather than on DOMContentLoaded stops a
+       light-mode visitor seeing a dark flash on every page load.
+    -->
+    <script>
+        (function () {
+            var d = document.documentElement;
+            d.className += ' js';
+            try {
+                var t = localStorage.getItem('portfolio_theme');
+                if (!t) {
+                    t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+                d.setAttribute('data-theme', t);
+            } catch (e) { /* private mode: keep the markup default */ }
+        })();
+    </script>
+
     <!-- SEO Meta Tags -->
     <title>Andrew Fernandes | Software Engineer</title>
     <meta name="description"
@@ -181,15 +203,16 @@
              ================================================================ -->
         <section id="about">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">About Me</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">About Me</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Engineering with purpose, building systems that matter
                     </p>
                 </div>
 
                 <div class="about-content">
-                    <div class="about-text animate-fade-left">
+                    <div class="about-text" data-reveal="left">
                         <p class="lead">
                             I'm a Computer Engineering undergraduate (B.Tech 2023–2027) based in
                             Navi Mumbai, India, with a passion for building intelligent systems
@@ -220,7 +243,7 @@
                         </div>
                     </div>
 
-                    <div class="about-highlights animate-fade-right">
+                    <div class="about-highlights" data-reveal="right" data-stagger>
                         <div class="highlight-item">
                             <div class="highlight-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -289,16 +312,17 @@
              ================================================================ -->
         <section id="skills">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Technical Skills</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">Technical Skills</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Technologies and tools I work with
                     </p>
                 </div>
 
-                <div class="skills-grid animate-on-scroll">
+                <div class="skills-grid" data-stagger>
                     <!-- Languages -->
-                    <div class="skill-category" data-category="languages">
+                    <div class="skill-category" data-reveal="auto" data-category="languages">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -317,7 +341,7 @@
                     </div>
 
                     <!-- Frameworks & Libraries -->
-                    <div class="skill-category" data-category="frameworks">
+                    <div class="skill-category" data-reveal="auto" data-category="frameworks">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path
@@ -340,7 +364,7 @@
                     </div>
 
                     <!-- Databases -->
-                    <div class="skill-category" data-category="databases">
+                    <div class="skill-category" data-reveal="auto" data-category="databases">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -359,7 +383,7 @@
                     </div>
 
                     <!-- Tools & Environments -->
-                    <div class="skill-category" data-category="tools">
+                    <div class="skill-category" data-reveal="auto" data-category="tools">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path
@@ -381,7 +405,7 @@
                     </div>
 
                     <!-- Operating Systems -->
-                    <div class="skill-category" data-category="os">
+                    <div class="skill-category" data-reveal="auto" data-category="os">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
@@ -405,16 +429,17 @@
              ================================================================ -->
         <section id="projects">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Featured Projects</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">Featured Projects</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Flagship projects showcasing real engineering depth
                     </p>
                 </div>
 
-                <div class="grid grid-auto gap-4 stagger-children">
+                <div class="tiling-grid" data-stagger>
                     <!-- Determa - Programming Language -->
-                    <div class="project-card">
+                    <div class="project-card" data-reveal="auto">
                         <span class="project-featured-badge">Featured</span>
                         <div class="project-card-header">
                             <span class="project-icon">🔧</span>
@@ -443,7 +468,7 @@
                     </div>
 
                     <!-- Automated Reasoning Engine -->
-                    <div class="project-card">
+                    <div class="project-card" data-reveal="auto">
                         <span class="project-featured-badge">Featured</span>
                         <div class="project-card-header">
                             <span class="project-icon">🧠</span>
@@ -472,7 +497,7 @@
                     </div>
 
                     <!-- VSCode Extension -->
-                    <div class="project-card">
+                    <div class="project-card" data-reveal="auto">
                         <span class="project-featured-badge">Published</span>
                         <div class="project-card-header">
                             <span class="project-icon">📁</span>
@@ -500,7 +525,7 @@
                     </div>
 
                     <!-- NourishFit -->
-                    <div class="project-card">
+                    <div class="project-card" data-reveal="auto">
                         <span class="project-featured-badge">Featured</span>
                         <div class="project-card-header">
                             <span class="project-icon">💪</span>
@@ -537,19 +562,20 @@
              ================================================================ -->
         <section id="github-repos">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">All Repositories</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">All Repositories</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Explore all my public projects on GitHub
                     </p>
                 </div>
 
                 <!-- Repository grid - populated by JavaScript -->
-                <div id="repos-grid" class="grid grid-auto gap-3">
+                <div id="repos-grid" class="tiling-grid tiling-grid-dense">
                     <!-- Loading skeletons will appear here, then replaced with actual repos -->
                 </div>
 
-                <div class="text-center mt-5 animate-on-scroll">
+                <div class="text-center mt-5" data-reveal="up">
                     <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
                         class="btn btn-secondary">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -574,14 +600,15 @@
              ================================================================ -->
         <section id="experience">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Experience & Activities</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">Experience &amp; Activities</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Hackathons, open source, and technical exploration
                     </p>
                 </div>
 
-                <div class="experience-timeline animate-on-scroll">
+                <div class="experience-timeline" data-stagger>
                     <!-- 
                     ========================================================
                     PLACEHOLDER EXPERIENCE CARDS
@@ -589,7 +616,7 @@
                     Replace these with your real experiences. Each card follows
                     this structure:
                     
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
                             <h3 class="experience-title">Title of Experience</h3>
                             <span class="experience-date">Month Year</span>
@@ -605,7 +632,7 @@
                     ======================================================== -->
 
                     <!-- Example Hackathon Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
                             <h3 class="experience-title">🏆 Hackathon Participation</h3>
                             <span class="experience-date">Coming Soon</span>
@@ -623,7 +650,7 @@
                     </div>
 
                     <!-- Example Open Source Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
                             <h3 class="experience-title">🌐 Open Source Contributions</h3>
                             <span class="experience-date">Ongoing</span>
@@ -641,7 +668,7 @@
                     </div>
 
                     <!-- Example Technical Exploration Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
                             <h3 class="experience-title">🔬 Technical Exploration</h3>
                             <span class="experience-date">Ongoing</span>
@@ -666,14 +693,15 @@
              ================================================================ -->
         <section id="contact">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Get In Touch</h2>
+                <div class="section-header" data-reveal="title">
+                    <h2 class="section-title"><span class="section-title-inner">Get In Touch</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Open to opportunities, collaborations, and interesting conversations
                     </p>
                 </div>
 
-                <div class="contact-content animate-on-scroll">
+                <div class="contact-content" data-reveal="up">
                     <p class="lead">
                         Whether you have an internship opportunity, want to collaborate on an
                         open source project, or just want to chat about AI and systems

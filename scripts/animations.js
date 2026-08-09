@@ -17,46 +17,97 @@
  * ============================================================================
  */
 
+/* The single shared observer for every reveal on the page, including ones
+   injected later by github-api.js. Null until initScrollAnimations decides
+   animation should happen at all. */
+let revealObserver = null;
+
+/* True when we have decided to show everything immediately: reduced motion,
+   or a browser with no IntersectionObserver. */
+let revealsDisabled = false;
+
 /**
- * Initialize Intersection Observer for scroll animations
- * Elements with .animate-on-scroll class will fade in when visible
+ * Write the stagger index onto each child of a group so CSS can turn it into
+ * a transition delay via `calc(var(--i) * var(--stagger))`.
+ */
+function indexStaggerGroup(group) {
+    Array.from(group.children).forEach((child, i) => {
+        child.style.setProperty('--i', i);
+    });
+}
+
+/**
+ * Hand a set of elements to the observer, or reveal them outright if
+ * animation is off. Content can never be stranded at opacity 0.
+ */
+function observeReveals(elements) {
+    elements.forEach(el => {
+        if (revealsDisabled || !revealObserver) {
+            el.classList.add('is-revealed');
+        } else {
+            revealObserver.observe(el);
+        }
+    });
+}
+
+/**
+ * Register reveal targets inside a subtree that was added to the DOM after
+ * load. Called by github-api.js once the repo cards are rendered.
+ * @param {Element} root - Container whose children should animate in
+ */
+function registerReveals(root) {
+    if (!root) return;
+    if (root.hasAttribute('data-stagger')) indexStaggerGroup(root);
+    observeReveals(Array.from(root.querySelectorAll('[data-reveal]')));
+}
+
+/**
+ * Initialize the scroll reveal choreography.
+ *
+ * Elements opt in with `data-reveal="<variant>"`; see the header of
+ * styles/animations.css for the variant list. A parent carrying
+ * `data-stagger` gets its children indexed into `--i`.
  */
 function initScrollAnimations() {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-stagger]').forEach(indexStaggerGroup);
 
-    if (prefersReducedMotion) {
-        // Make all elements visible immediately
-        document.querySelectorAll('.animate-on-scroll, .animate-fade-left, .animate-fade-right, .animate-scale, .stagger-children')
-            .forEach(el => el.classList.add('visible'));
-        return;
+    const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+    revealsDisabled =
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !('IntersectionObserver' in window);
+
+    if (!revealsDisabled) {
+        revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-revealed');
+                // One-shot: re-animating on every pass is noise, not choreography
+                revealObserver.unobserve(entry.target);
+            });
+        }, {
+            root: null,
+            // Fire a little before the element is fully on screen so the reveal
+            // has finished by the time it reaches comfortable reading position.
+            rootMargin: '0px 0px -12% 0px',
+            threshold: 0.12
+        });
     }
 
-    // Create observer with options
-    const observerOptions = {
-        root: null, // Use viewport
-        rootMargin: '0px 0px -100px 0px', // Trigger slightly before element is fully visible
-        threshold: 0.1 // Trigger when 10% visible
-    };
+    observeReveals(revealTargets);
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Stop observing once animated
-                observer.unobserve(entry.target);
-            }
+    // Anything already on screen at load should not wait for a scroll event
+    // that may never come on a tall viewport or a short page.
+    if (revealObserver) {
+        requestAnimationFrame(() => {
+            revealTargets.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('is-revealed');
+                    revealObserver.unobserve(el);
+                }
+            });
         });
-    }, observerOptions);
-
-    // Observe all animate-on-scroll elements
-    const animatedElements = document.querySelectorAll(
-        '.animate-on-scroll, .animate-fade-left, .animate-fade-right, .animate-scale, .stagger-children'
-    );
-
-    animatedElements.forEach(el => observer.observe(el));
-
-    console.log('[Animations] Initialized scroll animations for', animatedElements.length, 'elements');
+    }
 }
 
 /**
@@ -206,8 +257,6 @@ function initAnimations() {
     initSmoothScroll();
     initMobileNav();
     initActiveNavHighlight();
-
-    console.log('[Animations] All animations initialized');
 }
 
 // Export for potential module usage

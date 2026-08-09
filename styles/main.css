@@ -310,7 +310,20 @@ b {
 
 /* Responsive grid - auto-fit with minimum */
 .grid-auto {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+/* Tiling-WM grid. The `min(100%, Npx)` floor is what stops a narrow viewport
+   from forcing a track wider than the screen and producing horizontal scroll. */
+.tiling-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-5);
+}
+
+.tiling-grid-dense {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: var(--space-4);
 }
 
 /* ============================================================================
