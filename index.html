@@ -85,7 +85,6 @@
     <link rel="stylesheet" href="styles/components-extended.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/accents.css">
-    <link rel="stylesheet" href="styles/piano.css">
 </head>
 
 <body>
@@ -164,41 +163,6 @@
                 <span></span>
             </button>
         </div>
-    </nav>
-
-    <!--
-    ========================================================================
-    PIANO SCROLL PROGRESS
-    ========================================================================
-    One octave, laid out like a real keyboard: seven white keys in a row and
-    five black keys in their 2-3 grouping, each centred on the boundary
-    between the white keys it sits between.
-
-    Each white key is a real anchor to a section. The key for the section you
-    are currently in is held down. The scarlet strip along the bottom tracks
-    overall scroll; each black key lights gold as the strip passes under it.
-
-    --at on a black key is its position as a fraction of the octave. It drives
-    both its left offset and the point at which it lights up, so the two can
-    never disagree.
-    ========================================================================
-    -->
-    <nav class="piano" aria-label="Section shortcuts">
-        <span class="piano-fill" aria-hidden="true"></span>
-
-        <a class="piano-key" href="#hero"><span class="visually-hidden">Home</span></a>
-        <a class="piano-key" href="#about"><span class="visually-hidden">About</span></a>
-        <a class="piano-key" href="#skills"><span class="visually-hidden">Skills</span></a>
-        <a class="piano-key" href="#projects"><span class="visually-hidden">Projects</span></a>
-        <a class="piano-key" href="#github-repos"><span class="visually-hidden">Repositories</span></a>
-        <a class="piano-key" href="#experience"><span class="visually-hidden">Experience</span></a>
-        <a class="piano-key" href="#contact"><span class="visually-hidden">Contact</span></a>
-
-        <span class="piano-black" style="--at: 0.142857" aria-hidden="true"></span>
-        <span class="piano-black" style="--at: 0.285714" aria-hidden="true"></span>
-        <span class="piano-black" style="--at: 0.571429" aria-hidden="true"></span>
-        <span class="piano-black" style="--at: 0.714286" aria-hidden="true"></span>
-        <span class="piano-black" style="--at: 0.857143" aria-hidden="true"></span>
     </nav>
 
     <main id="main-content">

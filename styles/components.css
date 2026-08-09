@@ -101,7 +101,8 @@
 /* ---------------------------------------------------------------------------
    The nav is styled as a waybar/polybar status bar: a fixed-height strip of
    discrete "modules" rather than a floating header. Its height is
-   --statusbar-h in themes.css; the piano progress bar sits directly under it.
+   --statusbar-h in themes.css. Scroll progress renders as the hairline along
+   its bottom edge.
    --------------------------------------------------------------------------- */
 
 .statusbar {
@@ -125,6 +126,23 @@
 .statusbar.scrolled {
     border-bottom-color: var(--border-strong);
     box-shadow: 0 2px 16px var(--shadow-color);
+}
+
+/* Scroll progress, drawn as a hairline along the bar's bottom edge.
+   initScrollProgress() writes --scroll-progress (0..1); this is the only
+   thing that reads it, and it only ever scales - no layout on scroll. */
+.statusbar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background-image: linear-gradient(90deg, var(--accent-fill), var(--gold-fill));
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: left center;
+    will-change: transform;
+    pointer-events: none;
 }
 
 .nav-container {

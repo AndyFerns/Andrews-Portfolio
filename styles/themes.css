@@ -107,14 +107,6 @@
     --code-bg: rgba(203, 166, 247, 0.12);
     --code-text: #cba6f7;
 
-    /* === Piano scroll bar === */
-    --key-white: #e6e9ef;
-    --key-white-edge: #9399b2;
-    --key-black: #11111b;
-    --key-black-edge: #313244;
-    --key-pressed: var(--accent-fill);
-    --key-felt: #e0113a;
-    /* the red felt strip behind the keys */
 }
 
 /* ============================================================================
@@ -181,13 +173,6 @@
     --code-bg: rgba(136, 57, 239, 0.1);
     --code-text: #8839ef;
 
-    /* === Piano scroll bar === */
-    --key-white: #ffffff;
-    --key-white-edge: #9ca0b0;
-    --key-black: #4c4f69;
-    --key-black-edge: #6c6f85;
-    --key-pressed: var(--accent-fill);
-    --key-felt: #b8102f;
 }
 
 /* ============================================================================
@@ -234,7 +219,6 @@
 
     /* === Layout constants === */
     --statusbar-h: 44px;
-    --piano-h: 22px;
     --skew: -8deg;
     /* the house diagonal, used by dividers + panels */
 
@@ -298,8 +282,7 @@ body,
 .tech-tag,
 .term-window,
 .btn,
-.social-link,
-.piano-key {
+.social-link {
     transition:
         background-color var(--dur-2) var(--ease-cut),
         border-color var(--dur-2) var(--ease-cut),

@@ -227,8 +227,8 @@
     min-height: 100dvh;
     display: flex;
     align-items: center;
-    /* clear the status bar and the piano progress strip beneath it */
-    padding-top: calc(var(--statusbar-h) + var(--piano-h) + var(--space-6));
+    /* clear the fixed status bar */
+    padding-top: calc(var(--statusbar-h) + var(--space-7));
     padding-bottom: var(--space-8);
     background: var(--gradient-hero);
     position: relative;

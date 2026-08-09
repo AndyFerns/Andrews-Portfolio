@@ -36,6 +36,7 @@
     let mouseY = -1000;
     let animationId;
     let isReducedMotion = false;
+    let frameTime = 0;
 
     // ==========================================================================
     // Particle Class
@@ -80,15 +81,16 @@
             if (this.y < 0) this.y = canvas.height;
             if (this.y > canvas.height) this.y = 0;
 
-            // Gentle oscillation for organic feel
-            this.x += Math.sin(Date.now() * 0.001 + this.originalX) * 0.1;
-            this.y += Math.cos(Date.now() * 0.001 + this.originalY) * 0.1;
+            // Gentle oscillation for organic feel. `frameTime` is sampled once
+            // per frame rather than twice per particle.
+            this.x += Math.sin(frameTime + this.originalX) * 0.1;
+            this.y += Math.cos(frameTime + this.originalY) * 0.1;
         }
 
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = getParticleColor(this.opacity);
+            ctx.globalAlpha = this.opacity;
             ctx.fill();
         }
     }
@@ -96,34 +98,21 @@
     // ==========================================================================
     // Helper Functions
     // ==========================================================================
-    function getParticleColor(opacity) {
-        // Get the current theme's accent color
+    /**
+     * Theme colours are read once and cached.
+     *
+     * These used to be resolved with getComputedStyle inside the draw calls,
+     * which meant a forced style recalculation per particle and per connection
+     * line, every frame. Reading them here instead costs two lookups per theme
+     * change rather than a few thousand per second.
+     */
+    let particleColor = '#ff5566';
+    let connectionColor = '#8890ad';
+
+    function readThemeColors() {
         const style = getComputedStyle(document.documentElement);
-        const accentColor = style.getPropertyValue('--accent-primary').trim() || '#ff5566';
-
-        // Parse hex color and return with opacity
-        if (accentColor.startsWith('#')) {
-            const r = parseInt(accentColor.slice(1, 3), 16);
-            const g = parseInt(accentColor.slice(3, 5), 16);
-            const b = parseInt(accentColor.slice(5, 7), 16);
-            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-        }
-
-        return accentColor;
-    }
-
-    function getConnectionColor(opacity) {
-        const style = getComputedStyle(document.documentElement);
-        const textMuted = style.getPropertyValue('--text-muted').trim() || '#8890ad';
-
-        if (textMuted.startsWith('#')) {
-            const r = parseInt(textMuted.slice(1, 3), 16);
-            const g = parseInt(textMuted.slice(3, 5), 16);
-            const b = parseInt(textMuted.slice(5, 7), 16);
-            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-        }
-
-        return textMuted;
+        particleColor = style.getPropertyValue('--accent-primary').trim() || '#ff5566';
+        connectionColor = style.getPropertyValue('--text-muted').trim() || '#8890ad';
     }
 
     // ==========================================================================
@@ -161,6 +150,11 @@
     }
 
     function drawConnections() {
+        // Colour and line width are set once for the whole pass; only
+        // globalAlpha varies per line.
+        ctx.strokeStyle = connectionColor;
+        ctx.lineWidth = 0.5;
+
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
@@ -168,10 +162,8 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < CONFIG.connectionDistance) {
-                    const opacity = (1 - distance / CONFIG.connectionDistance) * CONFIG.connectionOpacity;
+                    ctx.globalAlpha = (1 - distance / CONFIG.connectionDistance) * CONFIG.connectionOpacity;
                     ctx.beginPath();
-                    ctx.strokeStyle = getConnectionColor(opacity);
-                    ctx.lineWidth = 0.5;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
@@ -186,17 +178,21 @@
     function animate() {
         if (isReducedMotion) return;
 
+        frameTime = Date.now() * 0.001;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw connections between nearby particles
         drawConnections();
 
-        // Update and draw particles
+        // Update and draw particles. fillStyle is set once for the whole pass;
+        // only globalAlpha varies per particle.
+        ctx.fillStyle = particleColor;
         particles.forEach(particle => {
             particle.update();
             particle.draw();
         });
 
+        ctx.globalAlpha = 1;
         animationId = requestAnimationFrame(animate);
     }
 
@@ -242,6 +238,13 @@
         createCanvas();
         resizeCanvas();
         createParticles();
+        readThemeColors();
+
+        // Re-read the cached colours whenever the theme attribute flips
+        new MutationObserver(readThemeColors).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
 
         // Event listeners
         window.addEventListener('resize', handleResize);

@@ -496,13 +496,12 @@ section:nth-of-type(even) {
 
 /* Focus on an element that is itself scarlet: switch the ring to gold */
 .btn-primary:focus-visible,
-.piano-key:focus-visible,
+.nav-link.active:focus-visible,
 [data-focus-gold]:focus-visible {
     outline-color: var(--gold);
 }
 
-/* Available to screen readers, invisible on screen. Used for the piano key
-   labels, which have no room for visible text. */
+/* Available to screen readers, invisible on screen. */
 .visually-hidden {
     position: absolute;
     width: 1px;

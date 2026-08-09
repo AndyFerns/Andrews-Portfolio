@@ -194,11 +194,10 @@ function initSmoothScroll() {
                 const navLinks = document.querySelector('.nav-links');
                 if (navLinks) navLinks.classList.remove('open');
 
-                // Clear both fixed strips: the status bar and the piano
+                // Clear the fixed status bar
                 const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
-                const pianoHeight = document.querySelector('.piano')?.offsetHeight || 0;
                 const targetPosition = targetElement.getBoundingClientRect().top
-                    + window.pageYOffset - navHeight - pianoHeight;
+                    + window.pageYOffset - navHeight;
 
                 window.scrollTo({
                     top: targetPosition,
@@ -245,15 +244,13 @@ function initMobileNav() {
 }
 
 /**
- * Highlight the current section in both the status bar (focused workspace)
- * and the piano (held-down key).
+ * Highlight the current section in the status bar as the focused workspace.
  */
 function initActiveNavHighlight() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-    const pianoKeys = document.querySelectorAll('.piano-key[href^="#"]');
 
-    if (sections.length === 0) return;
+    if (sections.length === 0 || navLinks.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -261,10 +258,14 @@ function initActiveNavHighlight() {
             const id = entry.target.getAttribute('id');
 
             navLinks.forEach(link => {
-                link.classList.toggle('active', link.getAttribute('href') === '#' + id);
-            });
-            pianoKeys.forEach(key => {
-                key.classList.toggle('is-active', key.getAttribute('href') === '#' + id);
+                const isCurrent = link.getAttribute('href') === '#' + id;
+                link.classList.toggle('active', isCurrent);
+                // Announce the focused workspace to assistive tech too
+                if (isCurrent) {
+                    link.setAttribute('aria-current', 'true');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
             });
         });
     }, {
@@ -277,15 +278,16 @@ function initActiveNavHighlight() {
 }
 
 /**
- * Publish scroll progress (0..1) as --piano-progress on the piano element.
+ * Publish scroll progress (0..1) as --scroll-progress on the status bar,
+ * which renders it as the hairline along its bottom edge.
  *
- * The only thing that consumes it is a scaleX and an opacity clamp in
- * piano.css, so a scroll never reads layout back out or writes a geometric
- * property. The document height is measured once per frame at most.
+ * The only thing that consumes it is a scaleX, so a scroll never reads layout
+ * back out or writes a geometric property. The document height is measured
+ * once per frame at most.
  */
-function initPianoProgress() {
-    const piano = document.querySelector('.piano');
-    if (!piano) return;
+function initScrollProgress() {
+    const bar = document.querySelector('.statusbar');
+    if (!bar) return;
 
     let ticking = false;
 
@@ -294,7 +296,7 @@ function initPianoProgress() {
         const progress = scrollable > 0
             ? Math.min(1, Math.max(0, window.scrollY / scrollable))
             : 0;
-        piano.style.setProperty('--piano-progress', progress.toFixed(4));
+        bar.style.setProperty('--scroll-progress', progress.toFixed(4));
         ticking = false;
     }
 
@@ -326,7 +328,7 @@ function initAnimations() {
     initMobileNav();
     initActiveNavHighlight();
     initStatusBarClock();
-    initPianoProgress();
+    initScrollProgress();
 }
 
 // Export for potential module usage
