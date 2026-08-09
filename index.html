@@ -147,7 +147,8 @@
                 <div class="hero-content">
                     <!-- Hero Text -->
                     <div class="hero-text">
-                        <p class="hero-greeting">👋 Hello, I'm</p>
+                        <p class="hero-greeting"><span class="hero-greeting-caret"
+                                aria-hidden="true">&#10095;</span> whoami</p>
                         <h1 class="hero-name">Andrew Fernandes</h1>
                         <p class="hero-tagline">
                             Building AI systems from first principles. Computer Engineering undergraduate
@@ -169,21 +170,100 @@
                         </div>
                     </div>
 
-                    <!-- Hero Image -->
+                    <!--
+                    ====================================================
+                    FASTFETCH "ABOUT" CARD
+                    ====================================================
+                    A terminal window laid out like fastfetch/neofetch:
+                    portrait on the left where the distro logo would go,
+                    key:value rows on the right, palette swatches and a
+                    blinking block cursor underneath.
+
+                    TO EDIT THE ROWS: they are plain <dt>/<dd> pairs below.
+                    "Uptime" is recalculated by initFetchCard() in
+                    scripts/main.js from CODING_SINCE; the value in the markup
+                    is the no-JS fallback.
+                    ====================================================
+                    -->
                     <div class="hero-image">
-                        <div class="hero-image-wrapper">
-                            <!--
-                            ================================================
-                            PROFILE IMAGE PLACEHOLDER
-                            ================================================
-                            To add your real image:
-                            1. Add your image to assets/images/
-                            2. Replace the src below with your image path
-                            Example: src="assets/images/profile.jpg"
-                            ================================================
-                            -->
-                            <img src="assets/images/Andrew Linkedin.jpeg"
-                                alt="Andrew Fernandes - Profile Photo" loading="eager">
+                        <div class="term-window" data-reveal="wipe">
+                            <div class="term-header">
+                                <span class="term-dots" aria-hidden="true">
+                                    <span class="term-dot term-dot-close"></span>
+                                    <span class="term-dot term-dot-min"></span>
+                                    <span class="term-dot term-dot-max"></span>
+                                </span>
+                                <span class="term-title">andrew@arch:~</span>
+                            </div>
+
+                            <div class="term-body">
+                                <p class="term-line">
+                                    <span class="term-prompt">andrew@arch</span><span
+                                        class="term-punct">:</span><span class="term-path">~</span>
+                                    <span class="term-caret">&#10095;</span>
+                                    <span class="term-cmd">fastfetch</span>
+                                </p>
+
+                                <div class="fetch">
+                                    <div class="fetch-logo">
+                                        <img src="assets/images/Andrew Linkedin.jpeg"
+                                            alt="Andrew Fernandes - Profile Photo" width="150" height="150"
+                                            loading="eager" decoding="async">
+                                        <svg class="fetch-sigil" viewBox="0 0 24 24" aria-hidden="true"
+                                            focusable="false">
+                                            <path d="M12 2 3 21h4.6L12 11.4 16.4 21H21z" fill="currentColor" />
+                                        </svg>
+                                    </div>
+
+                                    <dl class="fetch-rows">
+                                        <div class="fetch-row">
+                                            <dt>OS</dt>
+                                            <dd>Arch Linux x86_64 &middot; Windows 11</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Shell</dt>
+                                            <dd>bash &middot; pwsh</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Editor</dt>
+                                            <dd>Neovim &middot; VS Code</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>WM</dt>
+                                            <dd>i3-gaps</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Uptime</dt>
+                                            <dd id="fetch-uptime">4 years</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Now Playing</dt>
+                                            <dd class="fetch-nowplaying">
+                                                <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                                                Einaudi &mdash; Nuvole Bianche
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+
+                                <ul class="fetch-swatches" aria-hidden="true">
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+
+                                <p class="term-line">
+                                    <span class="term-prompt">andrew@arch</span><span
+                                        class="term-punct">:</span><span class="term-path">~</span>
+                                    <span class="term-caret">&#10095;</span>
+                                    <span class="typing-cursor" aria-hidden="true"></span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
