@@ -35,6 +35,17 @@ html {
     /* Smooth scrolling for anchor links */
     scroll-behavior: smooth;
 
+    /* Native anchor jumps (JS disabled, or a deep link on load) must clear the
+       fixed status bar. This is what makes #contact land correctly without JS. */
+    scroll-padding-top: calc(var(--statusbar-h) + var(--space-2));
+
+    /* The reveal offsets and diagonal dividers deliberately overhang the
+       viewport. `clip` contains them without turning <html> into a scroll
+       container, which `hidden` would - that breaks position: sticky and
+       scroll anchoring. */
+    overflow-x: hidden;
+    overflow-x: clip;
+
     /* Prevent font size inflation on mobile */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -49,9 +60,8 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
 
-    /* The skewed panels and diagonal dividers overhang the viewport by design.
-       This is the guard that keeps that from becoming a horizontal scrollbar. */
     overflow-x: hidden;
+    overflow-x: clip;
 
     /* Optimize text rendering */
     -webkit-font-smoothing: antialiased;
@@ -515,8 +525,11 @@ section:nth-of-type(even) {
     border: 0;
 }
 
-/* Skip link for accessibility */
-.skip-link {
+/* Skip link for accessibility.
+   Selector is `a.skip-link`, not `.skip-link`: the generic `a:not(.btn)` link
+   colour above has specificity (0,1,1) and would otherwise repaint the label
+   in the accent colour it is sitting on, making it invisible when focused. */
+a.skip-link {
     position: absolute;
     top: -100%;
     left: 50%;
@@ -530,7 +543,7 @@ section:nth-of-type(even) {
     border-radius: var(--radius-md);
 }
 
-.skip-link:focus {
+a.skip-link:focus {
     top: var(--space-4);
 }
 

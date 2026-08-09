@@ -360,7 +360,8 @@
 
 .term-title {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    /* text-muted is too light against the header surface in light theme */
+    color: var(--text-primary);
     letter-spacing: 0.02em;
     overflow: hidden;
     text-overflow: ellipsis;

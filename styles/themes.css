@@ -46,8 +46,10 @@
     /* 11.3:1 on base */
     --text-secondary: #a6adc8;
     /* 7.4:1  on base */
-    --text-muted: #8890ad;
-    /* 5.2:1  on base */
+    --text-muted: #9aa2bd;
+    /* 6.5:1 on base, 5.0:1 on --bg-surface. Muted has to clear 4.5:1 on the
+       elevated surface too - card metadata like stat labels and dates live
+       there, and the darker Mocha overlay tones only reach ~4.0:1. */
     --text-inverse: #11111b;
     /* text on light/gold fills */
 
@@ -65,7 +67,6 @@
     /* === Accent: gold (secondary) === */
     --gold: #f2c14e;
     /* 9.8:1 on base            */
-    --gold-dim: #b8912f;
     --gold-fill: #dfa000;
     --gold-on-fill: #11111b;
     /* 8.2:1 on --gold-fill     */
@@ -75,7 +76,6 @@
     /* decorative hairlines     */
     --border-strong: #6c7086;
     /* interactive boundaries   */
-    --border-focus: var(--accent-primary);
     --shadow-color: rgba(0, 0, 0, 0.55);
     --highlight-bg: rgba(255, 85, 102, 0.12);
     --gold-glow: rgba(242, 193, 78, 0.22);
@@ -94,7 +94,6 @@
     --dot-max: #a6e3a1;
 
     /* === Gradients === */
-    --gradient-accent: linear-gradient(135deg, var(--accent-fill) 0%, var(--gold-fill) 100%);
     --gradient-grace: linear-gradient(90deg,
             transparent 0%,
             rgba(242, 193, 78, 0.15) 15%,
@@ -143,24 +142,26 @@
     /* === Accent: gold === */
     --gold: #7d5400;
     /* 5.9:1 on base - text-safe gold */
-    --gold-dim: #9a6b00;
     --gold-fill: #dfa000;
     --gold-on-fill: #11111b;
 
     /* === Lines & shadow === */
     --border-color: #ccd0da;
     --border-strong: #7c7f93;
-    --border-focus: var(--accent-primary);
     --shadow-color: rgba(76, 79, 105, 0.16);
     --highlight-bg: rgba(184, 16, 47, 0.08);
     --gold-glow: rgba(223, 160, 0, 0.2);
 
-    /* === Terminal / ricing chrome === */
+    /* === Terminal / ricing chrome ===
+       Darker than the usual Latte syntax colours: these sit on the terminal
+       surfaces (down to #ccd0da), and the stock Latte teal/blue/gold only
+       reach ~2.8-4.1:1 there. All four below clear 4.5:1 on every surface
+       they are used on. */
     --term-bg: #dce0e8;
     --term-header: #ccd0da;
-    --term-prompt: #179299;
-    --term-path: #1e66f5;
-    --term-key: #8f6100;
+    --term-prompt: #0d5f63;
+    --term-path: #1547ab;
+    --term-key: #6d4900;
     --term-value: var(--text-primary);
     --dot-close: #d20f39;
     --dot-min: #df8e1d;
@@ -214,20 +215,13 @@
     --dur-4: 420ms;
     --ease-cut: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-snap: cubic-bezier(0.34, 1.3, 0.44, 1);
-    --ease-in-cut: cubic-bezier(0.7, 0, 0.84, 0);
     --stagger: 55ms;
 
     /* === Layout constants === */
     --statusbar-h: 44px;
-    --skew: -8deg;
-    /* the house diagonal, used by dividers + panels */
 
     /* === Z-index scale === */
-    --z-base: 0;
-    --z-raised: 10;
-    --z-sticky: 100;
     --z-nav: 500;
-    --z-progress: 600;
     --z-skip: 1000;
 
     /* === Type-badge palette ===
@@ -273,7 +267,6 @@
 */
 body,
 .nav,
-.card-surface,
 .project-card,
 .repo-card,
 .experience-card,

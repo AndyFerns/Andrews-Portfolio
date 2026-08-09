@@ -107,7 +107,7 @@
      * change rather than a few thousand per second.
      */
     let particleColor = '#ff5566';
-    let connectionColor = '#8890ad';
+    let connectionColor = '#9aa2bd';
 
     function readThemeColors() {
         const style = getComputedStyle(document.documentElement);
