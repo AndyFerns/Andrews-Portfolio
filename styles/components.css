@@ -355,10 +355,17 @@
    PROJECT CARDS
    ============================================================================ */
 
+/* ---------------------------------------------------------------------------
+   Project cards are tiles in a tiling WM: visible gaps between them, a thin
+   unfocused border, and a 2px "focused window" ring on hover/focus. The ring
+   is an inset box-shadow rather than a thicker border so focusing a tile can
+   never resize it or shift its neighbours.
+   --------------------------------------------------------------------------- */
+
 .project-card {
     background-color: var(--bg-surface);
     border-radius: var(--radius-md);
-    padding: var(--space-5);
+    padding: 0;
     border: 1px solid var(--border-color);
     transition:
         border-color var(--dur-1) var(--ease-cut),
@@ -367,34 +374,55 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
 }
 
 .project-card:hover,
 .project-card:focus-within {
     border-color: var(--accent-primary);
-    box-shadow: 0 12px 32px var(--shadow-color);
+    box-shadow:
+        inset 0 0 0 2px var(--accent-primary),
+        0 12px 32px var(--shadow-color);
 }
 
+/* The card's title bar, carrying the window controls */
 .project-card-header {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--term-header);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.project-icon {
-    font-size: 2.5rem;
-    line-height: 1;
+.project-card-header .project-featured-badge {
+    margin-left: auto;
 }
 
 .project-links {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+/* Everything below the title bar */
+.project-card>*:not(.project-card-header) {
+    margin-left: var(--space-5);
+    margin-right: var(--space-5);
+}
+
+.project-card>*:last-child {
+    margin-bottom: var(--space-5);
+}
+
+.project-card-title {
+    margin-top: var(--space-5);
 }
 
 .project-link {
-    width: 44px;
-    height: 44px;
+    position: relative;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -404,6 +432,18 @@
     transition:
         background-color var(--dur-1) var(--ease-cut),
         color var(--dur-1) var(--ease-cut);
+}
+
+/* The control is 30px so it reads as a title-bar button, but the tap target
+   is extended to 44x44 to meet the touch minimum. */
+.project-link::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
 }
 
 .project-link:hover,
@@ -450,9 +490,6 @@
 }
 
 .project-featured-badge {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
     padding: var(--space-1) var(--space-3);
     font-family: var(--font-mono);
     font-size: 0.6875rem;
@@ -481,9 +518,11 @@
     height: 100%;
 }
 
+/* Same focused-window treatment as the project tiles */
 .repo-card:hover,
-.repo-card:focus-within {
+.repo-card:focus-visible {
     border-color: var(--accent-primary);
+    box-shadow: inset 0 0 0 2px var(--accent-primary);
     transform: translateY(-2px);
 }
 

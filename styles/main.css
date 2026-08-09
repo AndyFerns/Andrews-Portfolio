@@ -350,6 +350,15 @@ section:nth-of-type(even) {
     max-width: 46rem;
 }
 
+/* Section headings are shell prompts: `~/projects ❯` sits above the title */
+.section-prompt {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    color: var(--text-muted);
+}
+
 .section-title {
     margin-bottom: var(--space-4);
     position: relative;
