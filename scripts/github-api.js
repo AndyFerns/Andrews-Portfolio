@@ -30,25 +30,26 @@ const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 const MAX_VISIBLE_REPOS = 9; // Show only 9 repos, rest redirects to GitHub
 
 /**
- * Language color mapping for repository cards
- * Colors are approximate GitHub language colors
+ * Badge type per language, so a repo card's language pill is coloured on the
+ * same scheme as the hand-written tech tags in the Featured Projects section.
+ * See the type palette in styles/themes.css.
  */
-const LANGUAGE_COLORS = {
-    'JavaScript': '#f1e05a',
-    'TypeScript': '#3178c6',
-    'Python': '#3572A5',
-    'Java': '#b07219',
-    'C': '#555555',
-    'C++': '#f34b7d',
-    'C#': '#239120',
-    'Rust': '#dea584',
-    'Go': '#00ADD8',
-    'Kotlin': '#A97BFF',
-    'HTML': '#e34c26',
-    'CSS': '#563d7c',
-    'Shell': '#89e051',
-    'Jupyter Notebook': '#DA5B0B',
-    'default': '#8890ad'
+const LANGUAGE_TYPES = {
+    'JavaScript': 'electric',
+    'TypeScript': 'water',
+    'Python': 'grass',
+    'Java': 'fire',
+    'C': 'steel',
+    'C++': 'psychic',
+    'C#': 'grass',
+    'Rust': 'ground',
+    'Go': 'ice',
+    'Kotlin': 'dragon',
+    'HTML': 'fire',
+    'CSS': 'poison',
+    'Shell': 'dark',
+    'Jupyter Notebook': 'fire',
+    'default': 'normal'
 };
 
 /**
@@ -184,7 +185,7 @@ function sortRepos(repos) {
  * @returns {string} HTML string for the repo card
  */
 function renderRepoCard(repo) {
-    const languageColor = LANGUAGE_COLORS[repo.language] || LANGUAGE_COLORS.default;
+    const languageType = LANGUAGE_TYPES[repo.language] || LANGUAGE_TYPES.default;
     const description = repo.description || 'No description provided';
     const truncatedDesc = description.length > 100
         ? description.substring(0, 100) + '...'
@@ -201,10 +202,7 @@ function renderRepoCard(repo) {
             <p class="repo-description">${truncatedDesc}</p>
             <div class="repo-meta">
                 ${repo.language ? `
-                    <span class="repo-meta-item">
-                        <span class="repo-language-dot" style="background-color: ${languageColor}"></span>
-                        ${repo.language}
-                    </span>
+                    <span class="tech-tag" data-type="${languageType}">${repo.language}</span>
                 ` : ''}
                 ${repo.stargazers_count > 0 ? `
                     <span class="repo-meta-item">

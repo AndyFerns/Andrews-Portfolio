@@ -246,23 +246,39 @@
     --z-progress: 600;
     --z-skip: 1000;
 
-    /* === Pokemon type palette ===
-       Used by the tech-stack badge pills. Readable as "nice colour-coded tags"
-       to anyone who does not recognise them. */
+    /* === Type-badge palette ===
+       Used by the tech-stack pills. Reads as "nicely colour-coded tags" to
+       anyone who does not recognise the scheme. Each fill is paired with the
+       ink that wins its contrast check; every pair here is >= 5.5:1.
+       Fills are theme-independent so a badge means the same thing in both. */
     --type-fire: #ee8130;
+    --type-fire-ink: #11111b;
     --type-water: #6390f0;
+    --type-water-ink: #11111b;
     --type-grass: #7ac74c;
+    --type-grass-ink: #11111b;
     --type-electric: #f7d02c;
+    --type-electric-ink: #11111b;
     --type-psychic: #f95587;
+    --type-psychic-ink: #11111b;
     --type-dragon: #6f35fc;
+    --type-dragon-ink: #ffffff;
     --type-steel: #b7b7ce;
+    --type-steel-ink: #11111b;
     --type-dark: #705746;
+    --type-dark-ink: #ffffff;
     --type-fighting: #c22e28;
+    --type-fighting-ink: #ffffff;
     --type-ghost: #735797;
+    --type-ghost-ink: #ffffff;
     --type-ice: #96d9d6;
+    --type-ice-ink: #11111b;
     --type-ground: #e2bf65;
+    --type-ground-ink: #11111b;
     --type-poison: #a33ea1;
+    --type-poison-ink: #ffffff;
     --type-normal: #a8a77a;
+    --type-normal-ink: #11111b;
 }
 
 /* ============================================================================

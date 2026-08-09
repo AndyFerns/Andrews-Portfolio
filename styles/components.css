@@ -557,9 +557,12 @@
 .repo-meta {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    font-size: 0.8rem;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     color: var(--text-muted);
+    margin-top: auto;
 }
 
 .repo-meta-item {
@@ -571,11 +574,4 @@
 .repo-meta-item svg {
     width: 14px;
     height: 14px;
-}
-
-.repo-language-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--accent-primary);
 }

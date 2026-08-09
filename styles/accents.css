@@ -1,0 +1,395 @@
+/**
+ * ============================================================================
+ * ACCENTS.CSS - The quiet references
+ * ============================================================================
+ *
+ * Everything in this file is a detail that should read as good design first
+ * and a reference second. If a visitor recognises none of it, the page should
+ * still look deliberate.
+ *
+ * Contents:
+ *   1. Type-badge pills  - tech tags as coloured type badges
+ *   2. Ball spinner      - the repo-loading indicator
+ *   3. Shiny             - a rare sparkle on one hover target
+ *   4. Grace             - gold diagonal dividers, glow on the active nav
+ *                          module, gold bloom behind a revealing section,
+ *                          and one serif small-caps label
+ *
+ * TO REMOVE ANY OF THESE: each block is self-contained and can be deleted, or
+ * drop the whole file from the <link> list in index.html. Nothing else depends
+ * on it. See PREVIEW.md.
+ *
+ * ============================================================================
+ */
+
+/* ============================================================================
+   1. TYPE-BADGE PILLS
+   ============================================================================
+   Tech tags render as filled badges. Project tags carry an explicit
+   data-type; the skills grid derives its badge colour from the category it is
+   already grouped under, so no per-tag markup is needed there.
+*/
+
+.tech-tag,
+.skill-tag {
+    display: inline-block;
+    padding: 0.28em 0.85em;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(0, 0, 0, 0.28);
+    /* The thin top highlight is what makes a flat pill read as a badge */
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%);
+    background-color: var(--type-normal);
+    color: var(--type-normal-ink);
+    text-shadow: none;
+    white-space: nowrap;
+}
+
+.skill-tag {
+    font-size: 0.75rem;
+    padding: 0.4em 0.95em;
+}
+
+.tech-tag,
+.skill-tag {
+    transition: transform var(--dur-1) var(--ease-snap);
+}
+
+.tech-tag:hover,
+.skill-tag:hover {
+    transform: translateY(-2px);
+}
+
+/* --- explicit types (project tech stacks) -------------------------------- */
+
+[data-type="fire"] {
+    background-color: var(--type-fire);
+    color: var(--type-fire-ink);
+}
+
+[data-type="water"] {
+    background-color: var(--type-water);
+    color: var(--type-water-ink);
+}
+
+[data-type="grass"] {
+    background-color: var(--type-grass);
+    color: var(--type-grass-ink);
+}
+
+[data-type="electric"] {
+    background-color: var(--type-electric);
+    color: var(--type-electric-ink);
+}
+
+[data-type="psychic"] {
+    background-color: var(--type-psychic);
+    color: var(--type-psychic-ink);
+}
+
+[data-type="dragon"] {
+    background-color: var(--type-dragon);
+    color: var(--type-dragon-ink);
+}
+
+[data-type="steel"] {
+    background-color: var(--type-steel);
+    color: var(--type-steel-ink);
+}
+
+[data-type="dark"] {
+    background-color: var(--type-dark);
+    color: var(--type-dark-ink);
+}
+
+[data-type="fighting"] {
+    background-color: var(--type-fighting);
+    color: var(--type-fighting-ink);
+}
+
+[data-type="ghost"] {
+    background-color: var(--type-ghost);
+    color: var(--type-ghost-ink);
+}
+
+[data-type="ice"] {
+    background-color: var(--type-ice);
+    color: var(--type-ice-ink);
+}
+
+[data-type="ground"] {
+    background-color: var(--type-ground);
+    color: var(--type-ground-ink);
+}
+
+[data-type="poison"] {
+    background-color: var(--type-poison);
+    color: var(--type-poison-ink);
+}
+
+[data-type="normal"] {
+    background-color: var(--type-normal);
+    color: var(--type-normal-ink);
+}
+
+/* --- derived types (skills grid, one colour per category) ---------------- */
+
+.skill-category[data-category="languages"] .skill-tag {
+    background-color: var(--type-fire);
+    color: var(--type-fire-ink);
+}
+
+.skill-category[data-category="frameworks"] .skill-tag {
+    background-color: var(--type-water);
+    color: var(--type-water-ink);
+}
+
+.skill-category[data-category="databases"] .skill-tag {
+    background-color: var(--type-grass);
+    color: var(--type-grass-ink);
+}
+
+.skill-category[data-category="tools"] .skill-tag {
+    background-color: var(--type-electric);
+    color: var(--type-electric-ink);
+}
+
+.skill-category[data-category="os"] .skill-tag {
+    background-color: var(--type-steel);
+    color: var(--type-steel-ink);
+}
+
+/* ============================================================================
+   2. BALL SPINNER
+   ============================================================================
+   Replaces the plain ring spinner while the GitHub repos load. Pure CSS: a
+   split disc with an equator band and a centre button.
+*/
+
+.loading-spinner {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--text-primary);
+    border-radius: 50%;
+    background:
+        linear-gradient(180deg,
+            var(--accent-fill) 0%,
+            var(--accent-fill) calc(50% - 2px),
+            var(--text-primary) calc(50% - 2px),
+            var(--text-primary) calc(50% + 2px),
+            var(--bg-surface) calc(50% + 2px),
+            var(--bg-surface) 100%);
+    animation: spin 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loading-spinner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    border: 2px solid var(--text-primary);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================================================
+   3. SHINY
+   ============================================================================
+   The sigil in the fastfetch card has a small chance of sparkling when
+   hovered. Odds and the trigger live in scripts/accents.js.
+*/
+
+.fetch-logo {
+    /* room for the sparkles to sit outside the sigil box */
+    isolation: isolate;
+}
+
+.fetch-sigil.is-shiny {
+    color: var(--gold);
+    animation: shiny-flash 900ms var(--ease-cut);
+}
+
+@keyframes shiny-flash {
+
+    0%,
+    100% {
+        filter: none;
+    }
+
+    30% {
+        filter: brightness(1.9) saturate(1.5) drop-shadow(0 0 6px var(--gold));
+    }
+}
+
+.sparkle {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    pointer-events: none;
+    color: var(--gold);
+    /* four-point star */
+    background: currentColor;
+    clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+    animation: sparkle-pop 900ms var(--ease-cut) forwards;
+}
+
+@keyframes sparkle-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.2) rotate(0deg);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1.15) rotate(45deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.35) rotate(110deg);
+    }
+}
+
+/* ============================================================================
+   4. GRACE
+   ============================================================================
+   Gold along every diagonal cut, a soft glow on the focused nav module, a
+   faint bloom behind a section as it reveals, and one serif small-caps label.
+*/
+
+/* --- gold edge on the diagonal dividers ---------------------------------
+   ::before is a gold wedge sitting 3px higher than ::after, which is the
+   opaque background wedge painted on top of it. What shows is a gold sliver
+   running along the diagonal. */
+
+section::before {
+    background-color: transparent;
+    background-image: var(--gradient-grace);
+    top: calc(-1 * var(--divider-h) - 2px);
+}
+
+section::after {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--divider-h) + 1px);
+    left: 0;
+    right: 0;
+    height: var(--divider-h);
+    background-color: inherit;
+    clip-path: polygon(0 100%, 100% 0, 100% 100%);
+    pointer-events: none;
+}
+
+section:first-of-type::after {
+    display: none;
+}
+
+/* --- glow on the focused workspace --------------------------------------- */
+
+.nav-link.active {
+    box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* --- bloom behind a section as its header reveals ------------------------ */
+
+.section-header {
+    position: relative;
+}
+
+.section-header::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -10%;
+    width: 60%;
+    height: 160%;
+    background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.js [data-reveal="title"].is-revealed.section-header::before {
+    animation: grace-bloom 1100ms var(--ease-cut) 120ms both;
+}
+
+@keyframes grace-bloom {
+    0% {
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.35;
+    }
+}
+
+/* --- the one serif small-caps label -------------------------------------- */
+
+.footer-colophon {
+    font-family: var(--font-accent);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+}
+
+.footer-colophon a {
+    color: var(--gold);
+}
+
+.footer-colophon a:hover {
+    color: var(--accent-primary);
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .loading-spinner {
+        animation: none !important;
+    }
+
+    .fetch-sigil.is-shiny {
+        animation: none !important;
+    }
+
+    .sparkle {
+        display: none !important;
+    }
+
+    .js [data-reveal="title"].is-revealed.section-header::before {
+        animation: none !important;
+        opacity: 0.35;
+    }
+
+    .tech-tag:hover,
+    .skill-tag:hover {
+        transform: none;
+    }
+
+    /* The gold wedge has nothing to sit behind once diagonals are off */
+    section::after {
+        display: none;
+    }
+}
