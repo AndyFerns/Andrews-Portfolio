@@ -89,6 +89,7 @@
     <link rel="stylesheet" href="styles/components-extended.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/accents.css">
+    <link rel="stylesheet" href="styles/contact-tui.css">
 </head>
 
 <body>
@@ -862,6 +863,24 @@
                     </p>
                 </div>
 
+                <!--
+                ========================================================
+                CONTACT TUI
+                ========================================================
+                A terminal window whose output is a curses-style menu.
+
+                The channel rows are ordinary links: they work with JS
+                off, and Tab/Enter reaches them normally. When JS is on,
+                initContactTui() in scripts/contact-tui.js upgrades the
+                list to a roving tabindex so Up/Down move the selection
+                the way they would in a real TUI - which is what makes
+                the keybind hints in the footer honest rather than
+                decorative.
+
+                TO ADD A CHANNEL: copy a .tui-row block. The JS picks up
+                rows automatically; nothing is hardcoded.
+                ========================================================
+                -->
                 <div class="contact-content" data-reveal="up">
                     <p class="lead">
                         Whether you have an internship opportunity, want to collaborate on an
@@ -869,9 +888,75 @@
                         programming, I'd love to hear from you!
                     </p>
 
-                    <a href="mailto:write2andy.fernandes@gmail.com" class="contact-email">
-                        write2andy.fernandes@gmail.com
-                    </a>
+                    <div class="term-window contact-tui">
+                        <div class="term-header">
+                            <span class="term-dots" aria-hidden="true">
+                                <span class="term-dot term-dot-close"></span>
+                                <span class="term-dot term-dot-min"></span>
+                                <span class="term-dot term-dot-max"></span>
+                            </span>
+                            <span class="term-title">kitty~/contact</span>
+                        </div>
+
+                        <div class="term-body">
+                            <p class="term-line">
+                                <span class="term-prompt">andy@debian</span><span
+                                    class="term-punct">:</span><span class="term-path">~/contact</span>
+                                <span class="term-caret">&#10095;</span>
+                                <span class="term-cmd">./reach-me</span>
+                            </p>
+
+                            <!-- The TUI frame -->
+                            <div class="tui">
+                                <div class="tui-titlebar">
+                                    <span class="tui-titlebar-label">reach&#8209;me</span>
+                                    <span class="tui-titlebar-meta" aria-hidden="true">3 channels</span>
+                                </div>
+
+                                <ul class="tui-list" aria-label="Contact channels">
+                                    <li>
+                                        <a class="tui-row" href="mailto:write2andy.fernandes@gmail.com">
+                                            <span class="tui-caret" aria-hidden="true">&#9656;</span>
+                                            <span class="tui-key">EMAIL</span>
+                                            <span class="tui-value">write2andy.fernandes@gmail.com</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="tui-row" href="https://github.com/AndyFerns" target="_blank"
+                                            rel="noopener noreferrer">
+                                            <span class="tui-caret" aria-hidden="true">&#9656;</span>
+                                            <span class="tui-key">GITHUB</span>
+                                            <span class="tui-value">github.com/AndyFerns</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="tui-row"
+                                            href="https://www.linkedin.com/in/andrew-fernandes-2004o/" target="_blank"
+                                            rel="noopener noreferrer">
+                                            <span class="tui-caret" aria-hidden="true">&#9656;</span>
+                                            <span class="tui-key">LINKEDIN</span>
+                                            <span class="tui-value">in/andrew&#8209;fernandes&#8209;2004o</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <!-- Status line, the way a TUI reports state -->
+                                <div class="tui-statusline">
+                                    <span class="tui-status-mode">NORMAL</span>
+                                    <span class="tui-status-msg">open to opportunities</span>
+                                    <span class="tui-status-pos" aria-hidden="true"><span
+                                            id="tui-index">1</span>/3</span>
+                                </div>
+                            </div>
+
+                            <!-- Keybind hints, mirroring what the list actually does -->
+                            <p class="tui-keys" aria-hidden="true">
+                                <span><kbd>&#8593;</kbd><kbd>&#8595;</kbd> move</span>
+                                <span><kbd>&#8629;</kbd> open</span>
+                                <span><kbd>Tab</kbd> next</span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -918,6 +1003,7 @@
     <script src="scripts/github-api.js"></script>
     <script src="scripts/animations.js"></script>
     <script src="scripts/accents.js"></script>
+    <script src="scripts/contact-tui.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 
