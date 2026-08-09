@@ -1,0 +1,227 @@
+/**
+ * ============================================================================
+ * CONTACT-TUI.CSS - The contact section as a curses-style menu
+ * ============================================================================
+ *
+ * Reuses the .term-window / .term-header / .term-body chrome from the hero
+ * fastfetch card, so both terminals on the page are the same window.
+ *
+ * The frame is drawn with real CSS borders rather than box-drawing characters.
+ * Box-drawing glyphs would be read out character by character by a screen
+ * reader and would break the moment a font fell back, so the only glyphs kept
+ * are the selection caret and the keybind arrows, and both are aria-hidden.
+ *
+ * TO REMOVE: delete this stylesheet's <link>, the <script> for
+ * scripts/contact-tui.js, and the .contact-tui block in index.html, then
+ * restore the plain .contact-email anchor. Nothing else depends on it.
+ *
+ * ============================================================================
+ */
+
+.contact-tui {
+    max-width: 46rem;
+    margin: var(--space-6) 0 0;
+    text-align: left;
+}
+
+/* ============================================================================
+   FRAME
+   ============================================================================ */
+
+.tui {
+    margin: var(--space-4) 0 var(--space-3);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-tertiary);
+    overflow: hidden;
+}
+
+.tui-titlebar {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--accent-fill);
+    color: var(--accent-on-fill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tui-titlebar-meta {
+    margin-left: auto;
+    opacity: 0.8;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+/* ============================================================================
+   ROWS
+   ============================================================================
+   Each row is a link. The caret column is a fixed width so the labels stay in
+   a column whether or not a row is selected - a TUI list does not reflow when
+   you move the cursor.
+*/
+
+.tui-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2) 0;
+}
+
+.tui-row {
+    display: grid;
+    grid-template-columns: 1.4em minmax(5.5em, auto) 1fr;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+    /* 44px min touch target */
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition:
+        background-color var(--dur-1) var(--ease-cut),
+        color var(--dur-1) var(--ease-cut),
+        border-color var(--dur-1) var(--ease-cut);
+}
+
+.tui-caret {
+    color: var(--accent-primary);
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--ease-cut);
+}
+
+.tui-key {
+    color: var(--term-key);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.tui-value {
+    color: var(--text-primary);
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+/* Selection: hover, keyboard focus, and the JS-driven cursor all land here,
+   so the highlight means the same thing however you got to it. */
+.tui-row:hover,
+.tui-row:focus-visible,
+.tui-row.is-selected {
+    background-color: var(--highlight-bg);
+    border-left-color: var(--accent-fill);
+    color: var(--text-primary);
+}
+
+.tui-row:hover .tui-caret,
+.tui-row:focus-visible .tui-caret,
+.tui-row.is-selected .tui-caret {
+    opacity: 1;
+}
+
+.tui-row:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: -2px;
+}
+
+/* ============================================================================
+   STATUS LINE
+   ============================================================================ */
+
+.tui-statusline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-1) var(--space-3);
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+}
+
+.tui-status-mode {
+    background-color: var(--gold-fill);
+    color: var(--gold-on-fill);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0 0.5em;
+    border-radius: 1px;
+}
+
+.tui-status-msg {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tui-status-pos {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+}
+
+/* ============================================================================
+   KEYBIND HINTS
+   ============================================================================ */
+
+.tui-keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: 0;
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+}
+
+.tui-keys kbd {
+    display: inline-block;
+    min-width: 1.5em;
+    padding: 0 0.35em;
+    margin-right: 0.3em;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: center;
+    color: var(--text-secondary);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: 2px;
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================
+   Below ~30rem the three columns stop fitting, so the value drops to its own
+   line under the label rather than truncating an email address.
+*/
+
+@media (max-width: 30rem) {
+    .tui-row {
+        grid-template-columns: 1.4em 1fr;
+        row-gap: var(--space-1);
+    }
+
+    .tui-value {
+        grid-column: 2;
+        font-size: 0.75rem;
+    }
+
+    .tui-keys {
+        gap: var(--space-3);
+    }
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .tui-row,
+    .tui-caret {
+        transition: none !important;
+    }
+}

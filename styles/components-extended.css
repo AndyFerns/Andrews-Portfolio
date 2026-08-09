@@ -722,10 +722,18 @@
    CONTACT SECTION
    ============================================================================ */
 
+/* Left-aligned and wide enough for the TUI window. `margin: 0` rather than
+   `0 auto` so this shares a left edge with .section-header above it - the
+   header is left-aligned, and centring the body under it read as a misalignment.
+   The lead paragraph keeps a comfortable measure of its own. */
 .contact-content {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
+    max-width: 46rem;
+    margin: 0;
+    text-align: left;
+}
+
+.contact-content .lead {
+    max-width: 60ch;
 }
 
 .contact-email {
