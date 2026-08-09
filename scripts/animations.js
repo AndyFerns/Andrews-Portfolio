@@ -194,9 +194,11 @@ function initSmoothScroll() {
                 const navLinks = document.querySelector('.nav-links');
                 if (navLinks) navLinks.classList.remove('open');
 
-                // Calculate offset for fixed nav
+                // Clear both fixed strips: the status bar and the piano
                 const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                const pianoHeight = document.querySelector('.piano')?.offsetHeight || 0;
+                const targetPosition = targetElement.getBoundingClientRect().top
+                    + window.pageYOffset - navHeight - pianoHeight;
 
                 window.scrollTo({
                     top: targetPosition,
@@ -243,36 +245,75 @@ function initMobileNav() {
 }
 
 /**
- * Initialize active nav link highlighting based on scroll position
+ * Highlight the current section in both the status bar (focused workspace)
+ * and the piano (held-down key).
  */
 function initActiveNavHighlight() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    const pianoKeys = document.querySelectorAll('.piano-key[href^="#"]');
 
-    if (sections.length === 0 || navLinks.length === 0) return;
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '-50% 0px -50% 0px', // Middle of viewport
-        threshold: 0
-    };
+    if (sections.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
 
-                // Remove active from all links
-                navLinks.forEach(link => link.classList.remove('active'));
-
-                // Add active to matching link
-                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-                if (activeLink) activeLink.classList.add('active');
-            }
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+            pianoKeys.forEach(key => {
+                key.classList.toggle('is-active', key.getAttribute('href') === '#' + id);
+            });
         });
-    }, observerOptions);
+    }, {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px', // Middle of viewport
+        threshold: 0
+    });
 
     sections.forEach(section => observer.observe(section));
+}
+
+/**
+ * Publish scroll progress (0..1) as --piano-progress on the piano element.
+ *
+ * The only thing that consumes it is a scaleX and an opacity clamp in
+ * piano.css, so a scroll never reads layout back out or writes a geometric
+ * property. The document height is measured once per frame at most.
+ */
+function initPianoProgress() {
+    const piano = document.querySelector('.piano');
+    if (!piano) return;
+
+    let ticking = false;
+
+    function update() {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollable > 0
+            ? Math.min(1, Math.max(0, window.scrollY / scrollable))
+            : 0;
+        piano.style.setProperty('--piano-progress', progress.toFixed(4));
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    // Recompute on resize: the document height changes with the layout
+    window.addEventListener('resize', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    update();
 }
 
 /**
@@ -285,6 +326,7 @@ function initAnimations() {
     initMobileNav();
     initActiveNavHighlight();
     initStatusBarClock();
+    initPianoProgress();
 }
 
 // Export for potential module usage
