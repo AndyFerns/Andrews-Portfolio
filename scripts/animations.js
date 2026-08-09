@@ -111,6 +111,33 @@ function initScrollAnimations() {
 }
 
 /**
+ * Drive the status bar clock module.
+ * Ticks once a second and only ever writes textContent, so it cannot cause
+ * layout (the module uses tabular figures and a fixed height).
+ */
+function initStatusBarClock() {
+    const clock = document.getElementById('bar-clock');
+    if (!clock) return;
+
+    function tick() {
+        const now = new Date();
+        const time = now.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+        // Composed from parts rather than one toLocaleDateString call, because
+        // locales disagree about whether the weekday or the day number leads.
+        const weekday = now.toLocaleDateString([], { weekday: 'short' });
+        clock.textContent = weekday + ' ' + now.getDate() + '  ' + time;
+        clock.setAttribute('datetime', now.toISOString());
+    }
+
+    tick();
+    setInterval(tick, 1000);
+}
+
+/**
  * Initialize navigation scroll effects
  * Adds 'scrolled' class when page is scrolled
  */
@@ -257,6 +284,7 @@ function initAnimations() {
     initSmoothScroll();
     initMobileNav();
     initActiveNavHighlight();
+    initStatusBarClock();
 }
 
 // Export for potential module usage

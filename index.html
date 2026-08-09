@@ -93,23 +93,49 @@
     <!-- ====================================================================
          NAVIGATION
          ==================================================================== -->
-    <nav class="nav" role="navigation" aria-label="Main navigation">
+    <!--
+    ========================================================================
+    STATUS BAR NAVIGATION
+    ========================================================================
+    Laid out like a waybar/polybar config: a brand module on the left,
+    workspace-style nav pills in the middle, and a clock + theme module on
+    the right. The workspace numbers come from data-ws and are decorative;
+    the link text is the real, readable label.
+    ========================================================================
+    -->
+    <nav class="nav statusbar" role="navigation" aria-label="Main navigation">
         <div class="container nav-container">
-            <!-- Logo/Brand -->
-            <a href="#" class="nav-brand">
-                Andrew<span> </span>Fernandes
+            <!-- Brand module -->
+            <a href="#" class="nav-brand bar-module">
+                <svg class="brand-sigil" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M12 2 3 21h4.6L12 11.4 16.4 21H21z" fill="currentColor" />
+                </svg>
+                Andrew Fernandes
             </a>
 
             <!-- Navigation Links -->
             <div class="nav-links">
-                <a href="#about" class="nav-link">About</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#experience" class="nav-link">Experience</a>
-                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#about" class="nav-link" data-ws="1">About</a>
+                <a href="#skills" class="nav-link" data-ws="2">Skills</a>
+                <a href="#projects" class="nav-link" data-ws="3">Projects</a>
+                <a href="#experience" class="nav-link" data-ws="4">Experience</a>
+                <a href="#contact" class="nav-link" data-ws="5">Contact</a>
+            </div>
 
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" aria-label="Toggle dark/light theme">
+            <!-- Right-hand modules -->
+            <div class="bar-modules">
+                <!-- Clock module: filled in by initStatusBarClock() -->
+                <span class="bar-module bar-clock">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                        focusable="false">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3 2" />
+                    </svg>
+                    <time id="bar-clock" datetime="">--:--</time>
+                </span>
+
+                <!-- Theme Toggle rendered as a bar module -->
+                <button class="theme-toggle bar-module" aria-label="Toggle dark/light theme">
                     <!-- Moon Icon (shown in dark mode) -->
                     <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />

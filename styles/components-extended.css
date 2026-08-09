@@ -212,10 +212,14 @@
    ============================================================================ */
 
 .hero {
+    /* dvh keeps the hero from being cut off by mobile browser chrome */
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
-    padding-top: 80px;
+    /* clear the status bar and the piano progress strip beneath it */
+    padding-top: calc(var(--statusbar-h) + var(--piano-h) + var(--space-6));
+    padding-bottom: var(--space-8);
     background: var(--gradient-hero);
     position: relative;
     overflow: hidden;
@@ -460,10 +464,12 @@
     white-space: nowrap;
 }
 
+/* The one row allowed to wrap - a truncated track title just reads as a bug */
 .fetch-nowplaying {
     display: flex;
     align-items: center;
     gap: 0.5em;
+    white-space: normal;
 }
 
 /* Three-bar equalizer. Decorative and silent. */
