@@ -1,0 +1,70 @@
+/**
+ * ============================================================================
+ * FONTS.CSS - Self-hosted Typefaces
+ * ============================================================================
+ *
+ * All faces are vendored in assets/fonts/ as latin-subset woff2. Nothing here
+ * touches the network at runtime, so the site works offline and on a locked
+ * down GitHub Pages deploy with no CDN.
+ *
+ * FAMILIES:
+ * - JetBrains Mono (variable 100-800) -> UI chrome, labels, terminal card
+ * - Anton (400)                       -> heavy display headings
+ * - Inter (variable 100-900)          -> body copy
+ * - Cormorant Garamond (600)          -> one small-caps accent label
+ *
+ * TO SWAP A FACE:
+ * 1. Drop the new woff2 into assets/fonts/
+ * 2. Point the matching @font-face src at it
+ * 3. Update the --font-* token in themes.css
+ *
+ * ============================================================================
+ */
+
+/* Mono - UI labels, nav pills, terminal rows, code */
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 100 800;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-latin-var.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Display - oversized kinetic section titles, hero name */
+@font-face {
+    font-family: 'Anton';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/anton-latin-400.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Body - paragraphs, descriptions */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../assets/fonts/inter-latin-var.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Accent serif - the small-caps "grace" label only */
+@font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../assets/fonts/cormorant-garamond-latin-600.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
