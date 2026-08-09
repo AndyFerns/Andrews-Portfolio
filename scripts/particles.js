@@ -99,7 +99,7 @@
     function getParticleColor(opacity) {
         // Get the current theme's accent color
         const style = getComputedStyle(document.documentElement);
-        const accentColor = style.getPropertyValue('--accent-primary').trim() || '#ff6978';
+        const accentColor = style.getPropertyValue('--accent-primary').trim() || '#ff5566';
 
         // Parse hex color and return with opacity
         if (accentColor.startsWith('#')) {
@@ -114,7 +114,7 @@
 
     function getConnectionColor(opacity) {
         const style = getComputedStyle(document.documentElement);
-        const textMuted = style.getPropertyValue('--text-muted').trim() || '#a9b18f';
+        const textMuted = style.getPropertyValue('--text-muted').trim() || '#8890ad';
 
         if (textMuted.startsWith('#')) {
             const r = parseInt(textMuted.slice(1, 3), 16);

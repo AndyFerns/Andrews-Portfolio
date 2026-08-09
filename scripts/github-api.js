@@ -48,7 +48,7 @@ const LANGUAGE_COLORS = {
     'CSS': '#563d7c',
     'Shell': '#89e051',
     'Jupyter Notebook': '#DA5B0B',
-    'default': '#a9b18f'
+    'default': '#8890ad'
 };
 
 /**

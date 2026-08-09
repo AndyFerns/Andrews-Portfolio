@@ -80,16 +80,17 @@
     }
 }
 
-/* Pulse - for CTAs */
+/* Pulse - used by loading text only. CTAs no longer pulse: a permanently
+   animating primary button competes with the scroll choreography. */
 @keyframes pulse {
 
     0%,
     100% {
-        box-shadow: 0 4px 14px rgba(255, 105, 120, 0.3);
+        opacity: 1;
     }
 
     50% {
-        box-shadow: 0 4px 20px rgba(255, 105, 120, 0.5);
+        opacity: 0.55;
     }
 }
 
@@ -264,7 +265,7 @@
 }
 
 .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(255, 105, 120, 0.4);
+    box-shadow: 0 0 20px var(--highlight-bg);
 }
 
 /* Scale effect for icons */
@@ -304,14 +305,6 @@
     height: 300px;
 }
 
-/* Primary button pulse animation */
-.btn-primary {
-    animation: pulse 2s infinite;
-}
-
-.btn-primary:hover {
-    animation: none;
-}
 
 /* ============================================================================
    SCROLL INDICATOR
