@@ -16,8 +16,6 @@
  * Initialize all application modules when DOM is ready
  */
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[Main] Portfolio initializing...');
-
     // Initialize theme first (to prevent flash)
     if (typeof initTheme === 'function') {
         initTheme();
@@ -36,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize dynamic year in footer
     initFooterYear();
 
-    console.log('[Main] Portfolio initialized successfully');
+    // Fill in the live values in the fastfetch hero card
+    initFetchCard();
 });
 
 /**
@@ -47,6 +46,40 @@ function initFooterYear() {
     if (yearElement) {
         yearElement.textContent = new Date().getFullYear();
     }
+}
+
+/**
+ * The date to count "Uptime" from in the fastfetch card.
+ * EDIT THIS to change what the hero reports. The markup carries a static
+ * fallback for the JS-disabled case, so update both if you change it.
+ */
+const CODING_SINCE = new Date('2022-01-01T00:00:00');
+
+/**
+ * Render the live "Uptime" row of the fastfetch card, in the style of a real
+ * uptime readout ("4 years, 62 days").
+ */
+function initFetchCard() {
+    const uptimeEl = document.getElementById('fetch-uptime');
+    if (!uptimeEl) return;
+
+    const now = new Date();
+    let years = now.getFullYear() - CODING_SINCE.getFullYear();
+
+    // Roll back a year if we have not reached the anniversary yet
+    const anniversary = new Date(CODING_SINCE);
+    anniversary.setFullYear(CODING_SINCE.getFullYear() + years);
+    if (anniversary > now) {
+        years -= 1;
+        anniversary.setFullYear(anniversary.getFullYear() - 1);
+    }
+
+    const days = Math.floor((now - anniversary) / 86400000);
+
+    const parts = [];
+    if (years > 0) parts.push(years + (years === 1 ? ' year' : ' years'));
+    parts.push(days + (days === 1 ? ' day' : ' days'));
+    uptimeEl.textContent = parts.join(', ');
 }
 
 /**

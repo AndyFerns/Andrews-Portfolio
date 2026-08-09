@@ -30,25 +30,26 @@ const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 const MAX_VISIBLE_REPOS = 9; // Show only 9 repos, rest redirects to GitHub
 
 /**
- * Language color mapping for repository cards
- * Colors are approximate GitHub language colors
+ * Badge type per language, so a repo card's language pill is coloured on the
+ * same scheme as the hand-written tech tags in the Featured Projects section.
+ * See the type palette in styles/themes.css.
  */
-const LANGUAGE_COLORS = {
-    'JavaScript': '#f1e05a',
-    'TypeScript': '#3178c6',
-    'Python': '#3572A5',
-    'Java': '#b07219',
-    'C': '#555555',
-    'C++': '#f34b7d',
-    'C#': '#239120',
-    'Rust': '#dea584',
-    'Go': '#00ADD8',
-    'Kotlin': '#A97BFF',
-    'HTML': '#e34c26',
-    'CSS': '#563d7c',
-    'Shell': '#89e051',
-    'Jupyter Notebook': '#DA5B0B',
-    'default': '#a9b18f'
+const LANGUAGE_TYPES = {
+    'JavaScript': 'electric',
+    'TypeScript': 'water',
+    'Python': 'grass',
+    'Java': 'fire',
+    'C': 'steel',
+    'C++': 'psychic',
+    'C#': 'grass',
+    'Rust': 'ground',
+    'Go': 'ice',
+    'Kotlin': 'dragon',
+    'HTML': 'fire',
+    'CSS': 'poison',
+    'Shell': 'dark',
+    'Jupyter Notebook': 'fire',
+    'default': 'normal'
 };
 
 /**
@@ -184,14 +185,14 @@ function sortRepos(repos) {
  * @returns {string} HTML string for the repo card
  */
 function renderRepoCard(repo) {
-    const languageColor = LANGUAGE_COLORS[repo.language] || LANGUAGE_COLORS.default;
+    const languageType = LANGUAGE_TYPES[repo.language] || LANGUAGE_TYPES.default;
     const description = repo.description || 'No description provided';
     const truncatedDesc = description.length > 100
         ? description.substring(0, 100) + '...'
         : description;
 
     return `
-        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-card hover-lift">
+        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-card" data-reveal="auto">
             <div class="repo-card-header">
                 <svg viewBox="0 0 16 16" fill="currentColor">
                     <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
@@ -201,10 +202,7 @@ function renderRepoCard(repo) {
             <p class="repo-description">${truncatedDesc}</p>
             <div class="repo-meta">
                 ${repo.language ? `
-                    <span class="repo-meta-item">
-                        <span class="repo-language-dot" style="background-color: ${languageColor}"></span>
-                        ${repo.language}
-                    </span>
+                    <span class="tech-tag" data-type="${languageType}">${repo.language}</span>
                 ` : ''}
                 ${repo.stargazers_count > 0 ? `
                     <span class="repo-meta-item">
@@ -289,11 +287,10 @@ async function initGitHubRepos() {
         // Render limited repos
         container.innerHTML = visibleRepos.map(renderRepoCard).join('');
 
-        // Add stagger animation
-        container.classList.add('stagger-children');
-        setTimeout(() => {
-            container.classList.add('visible');
-        }, 100);
+        // Hand the freshly injected cards to the shared reveal observer so
+        // they animate in on the same choreography as the static sections.
+        container.setAttribute('data-stagger', '');
+        if (typeof registerReveals === 'function') registerReveals(container);
 
     } catch (error) {
         container.innerHTML = renderError(error.message);

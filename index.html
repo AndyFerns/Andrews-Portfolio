@@ -27,6 +27,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!--
+    Runs before the stylesheets so there is no flash and no layout shift:
+    1. `js` on <html> is what unlocks the scroll-reveal start states. Without
+       it (JS disabled) nothing is ever hidden and the page is plain static
+       content.
+    2. Resolving the theme here rather than on DOMContentLoaded stops a
+       light-mode visitor seeing a dark flash on every page load.
+    -->
+    <script>
+        (function () {
+            var d = document.documentElement;
+            d.className += ' js';
+            try {
+                var t = localStorage.getItem('portfolio_theme');
+                if (!t) {
+                    t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+                d.setAttribute('data-theme', t);
+            } catch (e) { /* private mode: keep the markup default */ }
+        })();
+    </script>
+
     <!-- SEO Meta Tags -->
     <title>Andrew Fernandes | Software Engineer</title>
     <meta name="description"
@@ -42,23 +64,31 @@
         content="Computer Engineering student specializing in AI/ML, NLP reasoning systems, and systems programming.">
     <meta property="og:url" content="https://andyferns.github.io">
 
-    <!-- Favicon (add your own) -->
+    <!-- Favicon: the same sigil used by the brand module and the fetch card -->
     <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%231e1e2e'/%3E%3Cpath d='M12 4 3.5 20h3.9L12 11.2 16.6 20h3.9z' fill='%23ff5566'/%3E%3C/svg%3E">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <!-- Browser chrome colour, per scheme -->
+    <meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#eff1f5" media="(prefers-color-scheme: light)">
+
+    <!--
+    Self-hosted fonts. No CDN, no preconnect, no runtime third-party request.
+    Only the two above-the-fold faces are preloaded; Anton and Cormorant load
+    on demand via font-display: swap.
+    -->
+    <link rel="preload" href="assets/fonts/jetbrains-mono-latin-var.woff2" as="font" type="font/woff2"
+        crossorigin="anonymous">
+    <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/fonts.css">
     <link rel="stylesheet" href="styles/themes.css">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/components-extended.css">
     <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/accents.css">
 </head>
 
 <body>
@@ -68,23 +98,49 @@
     <!-- ====================================================================
          NAVIGATION
          ==================================================================== -->
-    <nav class="nav" role="navigation" aria-label="Main navigation">
+    <!--
+    ========================================================================
+    STATUS BAR NAVIGATION
+    ========================================================================
+    Laid out like a waybar/polybar config: a brand module on the left,
+    workspace-style nav pills in the middle, and a clock + theme module on
+    the right. The workspace numbers come from data-ws and are decorative;
+    the link text is the real, readable label.
+    ========================================================================
+    -->
+    <nav class="nav statusbar" role="navigation" aria-label="Main navigation">
         <div class="container nav-container">
-            <!-- Logo/Brand -->
-            <a href="#" class="nav-brand">
-                Andrew<span> </span>Fernandes
+            <!-- Brand module -->
+            <a href="#" class="nav-brand bar-module">
+                <svg class="brand-sigil" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M12 2 3 21h4.6L12 11.4 16.4 21H21z" fill="currentColor" />
+                </svg>
+                Andrew Fernandes
             </a>
 
             <!-- Navigation Links -->
             <div class="nav-links">
-                <a href="#about" class="nav-link">About</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#experience" class="nav-link">Experience</a>
-                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#about" class="nav-link" data-ws="1">About</a>
+                <a href="#skills" class="nav-link" data-ws="2">Skills</a>
+                <a href="#projects" class="nav-link" data-ws="3">Projects</a>
+                <a href="#experience" class="nav-link" data-ws="4">Experience</a>
+                <a href="#contact" class="nav-link" data-ws="5">Contact</a>
+            </div>
 
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" aria-label="Toggle dark/light theme">
+            <!-- Right-hand modules -->
+            <div class="bar-modules">
+                <!-- Clock module: filled in by initStatusBarClock() -->
+                <span class="bar-module bar-clock">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                        focusable="false">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3 2" />
+                    </svg>
+                    <time id="bar-clock" datetime="">--:--</time>
+                </span>
+
+                <!-- Theme Toggle rendered as a bar module -->
+                <button class="theme-toggle bar-module" aria-label="Toggle dark/light theme">
                     <!-- Moon Icon (shown in dark mode) -->
                     <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
@@ -122,11 +178,12 @@
                 <div class="hero-content">
                     <!-- Hero Text -->
                     <div class="hero-text">
-                        <p class="hero-greeting">👋 Hello, I'm</p>
+                        <p class="hero-greeting"><span class="hero-greeting-caret"
+                                aria-hidden="true">&#10095;</span> whoami</p>
                         <h1 class="hero-name">Andrew Fernandes</h1>
                         <p class="hero-tagline">
-                            Building AI systems from first principles. Computer Engineering undergraduate
-                            crafting NLP reasoning engines, programming languages, and developer tools
+                            Computer Engineering undergrad student delving into Quantum Computing,
+                            NLP reasoning engines, Programming Languages, and Developer Tools
                             that solve real problems.
                         </p>
                         <div class="hero-cta">
@@ -144,21 +201,100 @@
                         </div>
                     </div>
 
-                    <!-- Hero Image -->
+                    <!--
+                    ====================================================
+                    FASTFETCH "ABOUT" CARD
+                    ====================================================
+                    A terminal window laid out like fastfetch/neofetch:
+                    portrait on the left where the distro logo would go,
+                    key:value rows on the right, palette swatches and a
+                    blinking block cursor underneath.
+
+                    TO EDIT THE ROWS: they are plain <dt>/<dd> pairs below.
+                    "Uptime" is recalculated by initFetchCard() in
+                    scripts/main.js from CODING_SINCE; the value in the markup
+                    is the no-JS fallback.
+                    ====================================================
+                    -->
                     <div class="hero-image">
-                        <div class="hero-image-wrapper">
-                            <!--
-                            ================================================
-                            PROFILE IMAGE PLACEHOLDER
-                            ================================================
-                            To add your real image:
-                            1. Add your image to assets/images/
-                            2. Replace the src below with your image path
-                            Example: src="assets/images/profile.jpg"
-                            ================================================
-                            -->
-                            <img src="assets/images/Andrew Linkedin.jpeg"
-                                alt="Andrew Fernandes - Profile Photo" loading="eager">
+                        <div class="term-window" data-reveal="wipe">
+                            <div class="term-header">
+                                <span class="term-dots" aria-hidden="true">
+                                    <span class="term-dot term-dot-close"></span>
+                                    <span class="term-dot term-dot-min"></span>
+                                    <span class="term-dot term-dot-max"></span>
+                                </span>
+                                <span class="term-title">kitty~</span>
+                            </div>
+
+                            <div class="term-body">
+                                <p class="term-line">
+                                    <span class="term-prompt">andy@debian</span><span
+                                        class="term-punct">:</span><span class="term-path">~</span>
+                                    <span class="term-caret">&#10095;</span>
+                                    <span class="term-cmd">fastfetch</span>
+                                </p>
+
+                                <div class="fetch">
+                                    <div class="fetch-logo">
+                                        <img src="assets/images/Andrew Linkedin.jpeg"
+                                            alt="Andrew Fernandes - Profile Photo" width="150" height="150"
+                                            loading="eager" decoding="async">
+                                        <svg class="fetch-sigil" viewBox="0 0 24 24" aria-hidden="true"
+                                            focusable="false">
+                                            <path d="M12 2 3 21h4.6L12 11.4 16.4 21H21z" fill="currentColor" />
+                                        </svg>
+                                    </div>
+
+                                    <dl class="fetch-rows">
+                                        <div class="fetch-row">
+                                            <dt>OS</dt>
+                                            <dd>Debian 13 (trixie) &middot; Windows 11</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Shell</dt>
+                                            <dd>bash &middot; pwsh</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Editor</dt>
+                                            <dd>VS Code &middot; Neovim</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>WM</dt>
+                                            <dd>bspwm</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Uptime</dt>
+                                            <dd id="fetch-uptime">4 years</dd>
+                                        </div>
+                                        <div class="fetch-row">
+                                            <dt>Now Playing</dt>
+                                            <dd class="fetch-nowplaying">
+                                                <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                                                Chopin &mdash; Nocturne op.9 No.2
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+
+                                <ul class="fetch-swatches" aria-hidden="true">
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+
+                                <p class="term-line">
+                                    <span class="term-prompt">andy@debian</span><span
+                                        class="term-punct">:</span><span class="term-path">~</span>
+                                    <span class="term-caret">&#10095;</span>
+                                    <span class="typing-cursor" aria-hidden="true"></span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,36 +314,39 @@
              ================================================================ -->
         <section id="about">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">About Me</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/about</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">About Me</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Engineering with purpose, building systems that matter
                     </p>
                 </div>
 
                 <div class="about-content">
-                    <div class="about-text animate-fade-left">
+                    <div class="about-text" data-reveal="left">
                         <p class="lead">
-                            I'm a Computer Engineering undergraduate (B.Tech 2023–2027) based in
-                            Navi Mumbai, India, with a passion for building intelligent systems
+                            I'm a Computer Engineering undergraduate (B.Tech 2023-2027) based in
+                            India, with a passion for building systems
                             from the ground up.
                         </p>
                         <p>
                             My work sits at the intersection of <strong>Artificial Intelligence</strong>,
                             <strong>NLP & reasoning engines</strong>, <strong>systems programming</strong>,
                             and <strong>developer tooling</strong>. I believe the best way to understand
-                            something is to build it yourself—whether that's a programming language,
+                            something is to build it yourself; whether that's a programming language,
                             a reasoning engine, or an AI-powered application.
                         </p>
                         <p>
-                            I'm not just interested in using tools—I'm interested in understanding
+                            I'm not just interested in using tools, I'm interested in understanding
                             how they work and creating new ones. Every project I build is an opportunity
                             to go deeper into the stack and learn something fundamental.
                         </p>
 
                         <div class="about-stats">
                             <div class="stat-card">
-                                <span class="stat-number" id="repo-count">30+</span>
+                                <span class="stat-number" id="repo-count">35+</span>
                                 <span class="stat-label">Public Repos</span>
                             </div>
                             <div class="stat-card">
@@ -217,7 +356,7 @@
                         </div>
                     </div>
 
-                    <div class="about-highlights animate-fade-right">
+                    <div class="about-highlights" data-reveal="right" data-stagger>
                         <div class="highlight-item">
                             <div class="highlight-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -286,16 +425,19 @@
              ================================================================ -->
         <section id="skills">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Technical Skills</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/skills</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">Technical Skills</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Technologies and tools I work with
                     </p>
                 </div>
 
-                <div class="skills-grid animate-on-scroll">
+                <div class="skills-grid" data-stagger>
                     <!-- Languages -->
-                    <div class="skill-category" data-category="languages">
+                    <div class="skill-category" data-reveal="auto" data-category="languages">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -314,7 +456,7 @@
                     </div>
 
                     <!-- Frameworks & Libraries -->
-                    <div class="skill-category" data-category="frameworks">
+                    <div class="skill-category" data-reveal="auto" data-category="frameworks">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path
@@ -337,7 +479,7 @@
                     </div>
 
                     <!-- Databases -->
-                    <div class="skill-category" data-category="databases">
+                    <div class="skill-category" data-reveal="auto" data-category="databases">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -356,7 +498,7 @@
                     </div>
 
                     <!-- Tools & Environments -->
-                    <div class="skill-category" data-category="tools">
+                    <div class="skill-category" data-reveal="auto" data-category="tools">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path
@@ -378,7 +520,7 @@
                     </div>
 
                     <!-- Operating Systems -->
-                    <div class="skill-category" data-category="os">
+                    <div class="skill-category" data-reveal="auto" data-category="os">
                         <h3 class="skill-category-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
@@ -389,6 +531,7 @@
                         </h3>
                         <div class="skill-tags">
                             <span class="skill-tag">Windows</span>
+                            <span class="skill-tag">Debian</span>
                             <span class="skill-tag">Arch Linux</span>
                             <span class="skill-tag">Ubuntu</span>
                         </div>
@@ -402,21 +545,28 @@
              ================================================================ -->
         <section id="projects">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Featured Projects</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/projects</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">Featured Projects</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Flagship projects showcasing real engineering depth
                     </p>
                 </div>
 
-                <div class="grid grid-auto gap-4 stagger-children">
+                <div class="tiling-grid" data-stagger>
                     <!-- Determa - Programming Language -->
-                    <div class="project-card">
-                        <span class="project-featured-badge">Featured</span>
+                    <div class="project-card" data-reveal="auto">
                         <div class="project-card-header">
-                            <span class="project-icon">🔧</span>
+                            <span class="term-dots" aria-hidden="true">
+                                <span class="term-dot term-dot-close"></span>
+                                <span class="term-dot term-dot-min"></span>
+                                <span class="term-dot term-dot-max"></span>
+                            </span>
+                            <span class="project-featured-badge">Featured</span>
                             <div class="project-links">
-                                <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
+                                <a href="https://github.com/AndyFerns/Determa" target="_blank" rel="noopener noreferrer"
                                     class="project-link" title="View on GitHub">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -432,20 +582,24 @@
                             stack-based virtual machine with bytecode execution and memory management.
                         </p>
                         <div class="project-tech-stack">
-                            <span class="tech-tag">C</span>
-                            <span class="tech-tag">Compiler Design</span>
-                            <span class="tech-tag">Virtual Machine</span>
-                            <span class="tech-tag">Bytecode</span>
+                            <span class="tech-tag" data-type="steel">C</span>
+                            <span class="tech-tag" data-type="psychic">Compiler Design</span>
+                            <span class="tech-tag" data-type="ghost">Virtual Machine</span>
+                            <span class="tech-tag" data-type="dark">Bytecode</span>
                         </div>
                     </div>
 
                     <!-- Automated Reasoning Engine -->
-                    <div class="project-card">
-                        <span class="project-featured-badge">Featured</span>
+                    <div class="project-card" data-reveal="auto">
                         <div class="project-card-header">
-                            <span class="project-icon">🧠</span>
+                            <span class="term-dots" aria-hidden="true">
+                                <span class="term-dot term-dot-close"></span>
+                                <span class="term-dot term-dot-min"></span>
+                                <span class="term-dot term-dot-max"></span>
+                            </span>
+                            <span class="project-featured-badge">Featured</span>
                             <div class="project-links">
-                                <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
+                                <a href="https://github.com/AndyFerns/Automated-Reasoning-Project" target="_blank" rel="noopener noreferrer"
                                     class="project-link" title="View on GitHub">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -461,18 +615,22 @@
                             and integrated with a Flask-based frontend for interactive reasoning queries.
                         </p>
                         <div class="project-tech-stack">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">NLP</span>
-                            <span class="tech-tag">Flask</span>
-                            <span class="tech-tag">Logic Systems</span>
+                            <span class="tech-tag" data-type="grass">Python</span>
+                            <span class="tech-tag" data-type="psychic">NLP</span>
+                            <span class="tech-tag" data-type="water">Flask</span>
+                            <span class="tech-tag" data-type="steel">Logic Systems</span>
                         </div>
                     </div>
 
                     <!-- VSCode Extension -->
-                    <div class="project-card">
-                        <span class="project-featured-badge">Published</span>
+                    <div class="project-card" data-reveal="auto">
                         <div class="project-card-header">
-                            <span class="project-icon">📁</span>
+                            <span class="term-dots" aria-hidden="true">
+                                <span class="term-dot term-dot-close"></span>
+                                <span class="term-dot term-dot-min"></span>
+                                <span class="term-dot term-dot-max"></span>
+                            </span>
+                            <span class="project-featured-badge">Published</span>
                             <div class="project-links">
                                 <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
                                     class="project-link" title="View on GitHub">
@@ -490,19 +648,23 @@
                             support.
                         </p>
                         <div class="project-tech-stack">
-                            <span class="tech-tag">TypeScript</span>
-                            <span class="tech-tag">VSCode API</span>
-                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag" data-type="water">TypeScript</span>
+                            <span class="tech-tag" data-type="ice">VSCode API</span>
+                            <span class="tech-tag" data-type="grass">Node.js</span>
                         </div>
                     </div>
 
                     <!-- NourishFit -->
-                    <div class="project-card">
-                        <span class="project-featured-badge">Featured</span>
+                    <div class="project-card" data-reveal="auto">
                         <div class="project-card-header">
-                            <span class="project-icon">💪</span>
+                            <span class="term-dots" aria-hidden="true">
+                                <span class="term-dot term-dot-close"></span>
+                                <span class="term-dot term-dot-min"></span>
+                                <span class="term-dot term-dot-max"></span>
+                            </span>
+                            <span class="project-featured-badge">Featured</span>
                             <div class="project-links">
-                                <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
+                                <a href="https://github.com/AndyFerns/Nourishfit" target="_blank" rel="noopener noreferrer"
                                     class="project-link" title="View on GitHub">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -519,10 +681,10 @@
                             and Material 3 UI design.
                         </p>
                         <div class="project-tech-stack">
-                            <span class="tech-tag">Kotlin</span>
-                            <span class="tech-tag">Jetpack Compose</span>
-                            <span class="tech-tag">Firebase ML</span>
-                            <span class="tech-tag">MVVM</span>
+                            <span class="tech-tag" data-type="dragon">Kotlin</span>
+                            <span class="tech-tag" data-type="electric">Jetpack Compose</span>
+                            <span class="tech-tag" data-type="fire">Firebase ML</span>
+                            <span class="tech-tag" data-type="normal">MVVM</span>
                         </div>
                     </div>
                 </div>
@@ -534,19 +696,22 @@
              ================================================================ -->
         <section id="github-repos">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">All Repositories</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/repos</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">All Repositories</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Explore all my public projects on GitHub
                     </p>
                 </div>
 
                 <!-- Repository grid - populated by JavaScript -->
-                <div id="repos-grid" class="grid grid-auto gap-3">
+                <div id="repos-grid" class="tiling-grid tiling-grid-dense">
                     <!-- Loading skeletons will appear here, then replaced with actual repos -->
                 </div>
 
-                <div class="text-center mt-5 animate-on-scroll">
+                <div class="text-center mt-5" data-reveal="up">
                     <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
                         class="btn btn-secondary">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -571,14 +736,17 @@
              ================================================================ -->
         <section id="experience">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Experience & Activities</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/experience</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">Experience &amp; Activities</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Hackathons, open source, and technical exploration
                     </p>
                 </div>
 
-                <div class="experience-timeline animate-on-scroll">
+                <div class="experience-timeline" data-stagger>
                     <!-- 
                     ========================================================
                     PLACEHOLDER EXPERIENCE CARDS
@@ -586,7 +754,7 @@
                     Replace these with your real experiences. Each card follows
                     this structure:
                     
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
                             <h3 class="experience-title">Title of Experience</h3>
                             <span class="experience-date">Month Year</span>
@@ -602,9 +770,16 @@
                     ======================================================== -->
 
                     <!-- Example Hackathon Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
-                            <h3 class="experience-title">🏆 Hackathon Participation</h3>
+                            <h3 class="experience-title">
+                                <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" aria-hidden="true" focusable="false">
+                                    <path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
+                                    <path d="M7 6H4v2a3 3 0 0 0 3 3m10-5h3v2a3 3 0 0 1-3 3" />
+                                </svg>
+                                Hackathon Participation
+                            </h3>
                             <span class="experience-date">Coming Soon</span>
                         </div>
                         <p class="experience-description">
@@ -620,9 +795,16 @@
                     </div>
 
                     <!-- Example Open Source Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
-                            <h3 class="experience-title">🌐 Open Source Contributions</h3>
+                            <h3 class="experience-title">
+                                <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" aria-hidden="true" focusable="false">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18" />
+                                </svg>
+                                Open Source Contributions
+                            </h3>
                             <span class="experience-date">Ongoing</span>
                         </div>
                         <p class="experience-description">
@@ -638,9 +820,16 @@
                     </div>
 
                     <!-- Example Technical Exploration Entry -->
-                    <div class="experience-card">
+                    <div class="experience-card" data-reveal="panel">
                         <div class="experience-card-header">
-                            <h3 class="experience-title">🔬 Technical Exploration</h3>
+                            <h3 class="experience-title">
+                                <svg class="experience-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" aria-hidden="true" focusable="false">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                                    <path d="m7 9 3 3-3 3m6 0h4" />
+                                </svg>
+                                Technical Exploration
+                            </h3>
                             <span class="experience-date">Ongoing</span>
                         </div>
                         <p class="experience-description">
@@ -663,51 +852,26 @@
              ================================================================ -->
         <section id="contact">
             <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2 class="section-title">Get In Touch</h2>
+                <div class="section-header" data-reveal="title">
+                    <p class="section-prompt" aria-hidden="true"><span class="term-path">~/contact</span><span
+                            class="term-caret">&#10095;</span></p>
+                    <h2 class="section-title"><span class="section-title-inner">Get In Touch</span></h2>
+                    <span class="section-cut" aria-hidden="true"></span>
                     <p class="section-subtitle">
                         Open to opportunities, collaborations, and interesting conversations
                     </p>
                 </div>
 
-                <div class="contact-content animate-on-scroll">
+                <div class="contact-content" data-reveal="up">
                     <p class="lead">
                         Whether you have an internship opportunity, want to collaborate on an
-                        open source project, or just want to chat about AI and systems
-                        programming—I'd love to hear from you.
+                        open source project, or just want to chat about AI, Linux, Quantum Computing or systems
+                        programming, I'd love to hear from you!
                     </p>
 
-                    <a href="mailto:write2andrew.fernandes@gmail.com" class="contact-email">
-                        write2andrew.fernandes@gmail.com
+                    <a href="mailto:write2andy.fernandes@gmail.com" class="contact-email">
+                        write2andy.fernandes@gmail.com
                     </a>
-
-                    <div class="social-links contact-socials">
-                        <!-- GitHub -->
-                        <a href="https://github.com/AndyFerns" target="_blank" rel="noopener noreferrer"
-                            class="social-link" title="GitHub">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                            </svg>
-                        </a>
-
-                        <!-- LinkedIn -->
-                        <a href="https://www.linkedin.com/in/andrew-fernandes-2004o/" target="_blank"
-                            rel="noopener noreferrer" class="social-link" title="LinkedIn">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                            </svg>
-                        </a>
-
-                        <!-- Email -->
-                        <a href="mailto:write2andrew.fernandes@gmail.com" class="social-link" title="Email">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                <polyline points="22,6 12,13 2,6" />
-                            </svg>
-                        </a>
-                    </div>
                 </div>
             </div>
         </section>
@@ -736,8 +900,8 @@
                     </a>
                 </div>
 
-                <p class="footer-text">
-                    Designed & Built by <a href="https://github.com/AndyFerns">Andrew Fernandes</a>
+                <p class="footer-text footer-colophon">
+                    Designed &amp; Built by <a href="https://github.com/AndyFerns">Andrew Fernandes</a>
                 </p>
                 <p class="footer-text">
                     © <span id="current-year">2026</span> All rights reserved.
@@ -753,6 +917,7 @@
     <script src="scripts/theme-toggle.js"></script>
     <script src="scripts/github-api.js"></script>
     <script src="scripts/animations.js"></script>
+    <script src="scripts/accents.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 

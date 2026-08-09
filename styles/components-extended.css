@@ -24,15 +24,16 @@
 }
 
 .skill-category-title {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
 }
 
 .skill-category-title svg {
@@ -48,39 +49,22 @@
 }
 
 .skill-tag {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
     font-weight: 500;
-    background-color: var(--skill-languages);
+    background-color: var(--highlight-bg);
     color: var(--text-primary);
-    border-radius: 8px;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    transition:
+        border-color var(--dur-1) var(--ease-cut),
+        transform var(--dur-1) var(--ease-cut);
 }
 
 .skill-tag:hover {
     border-color: var(--accent-primary);
     transform: translateY(-2px);
-}
-
-.skill-category[data-category="languages"] .skill-tag {
-    background-color: var(--skill-languages);
-}
-
-.skill-category[data-category="frameworks"] .skill-tag {
-    background-color: var(--skill-frameworks);
-}
-
-.skill-category[data-category="databases"] .skill-tag {
-    background-color: var(--skill-databases);
-}
-
-.skill-category[data-category="tools"] .skill-tag {
-    background-color: var(--skill-tools);
-}
-
-.skill-category[data-category="os"] .skill-tag {
-    background-color: var(--skill-os);
 }
 
 /* ============================================================================
@@ -104,17 +88,19 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    background: linear-gradient(180deg, var(--accent-fill) 0%, var(--gold-fill) 100%);
 }
 
 .experience-card {
     position: relative;
-    padding: 1.5rem;
-    background-color: var(--bg-secondary);
-    border-radius: 12px;
+    padding: var(--space-5);
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
+    margin-bottom: var(--space-5);
+    transition:
+        border-color var(--dur-1) var(--ease-cut),
+        transform var(--dur-1) var(--ease-cut);
 }
 
 .experience-card:last-child {
@@ -122,7 +108,7 @@
 }
 
 .experience-card:hover {
-    border-color: var(--accent-secondary);
+    border-color: var(--gold);
     transform: translateX(4px);
 }
 
@@ -133,7 +119,7 @@
     top: 1.75rem;
     width: 12px;
     height: 12px;
-    background-color: var(--accent-primary);
+    background-color: var(--accent-fill);
     border: 3px solid var(--bg-primary);
     border-radius: 50%;
 }
@@ -148,15 +134,25 @@
 }
 
 .experience-title {
-    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 1.0625rem;
     font-weight: 600;
     color: var(--text-primary);
 }
 
+.experience-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--accent-primary);
+}
+
 .experience-date {
-    font-size: 0.85rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
 }
 
 .experience-description {
@@ -173,12 +169,13 @@
 }
 
 .experience-tag {
-    padding: 0.25rem 0.75rem;
+    padding: var(--space-1) var(--space-3);
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 500;
     background-color: var(--highlight-bg);
-    color: var(--accent-primary);
-    border-radius: 20px;
+    color: var(--accent-bright);
+    border-radius: var(--radius-sm);
 }
 
 /* ============================================================================
@@ -196,17 +193,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    transition: all 0.3s ease;
+    transition:
+        background-color var(--dur-1) var(--ease-cut),
+        border-color var(--dur-1) var(--ease-cut),
+        color var(--dur-1) var(--ease-cut),
+        transform var(--dur-1) var(--ease-cut);
 }
 
-.social-link:hover {
-    background-color: var(--accent-primary);
-    border-color: var(--accent-primary);
-    color: #fff;
+.social-link:hover,
+.social-link:focus-visible {
+    background-color: var(--accent-fill);
+    border-color: var(--accent-fill);
+    color: var(--accent-on-fill);
     transform: translateY(-4px);
 }
 
@@ -220,10 +222,14 @@
    ============================================================================ */
 
 .hero {
+    /* dvh keeps the hero from being cut off by mobile browser chrome */
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
-    padding-top: 80px;
+    /* clear the fixed status bar */
+    padding-top: calc(var(--statusbar-h) + var(--space-7));
+    padding-bottom: var(--space-8);
     background: var(--gradient-hero);
     position: relative;
     overflow: hidden;
@@ -234,16 +240,15 @@
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(circle at 20% 50%, rgba(255, 105, 120, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(212, 194, 252, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(169, 177, 143, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 15% 45%, var(--highlight-bg) 0%, transparent 55%),
+        radial-gradient(circle at 85% 15%, var(--gold-glow) 0%, transparent 50%);
     pointer-events: none;
 }
 
 .hero-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
     align-items: center;
     position: relative;
     z-index: 1;
@@ -251,32 +256,43 @@
 
 .hero-text {
     max-width: 600px;
+    min-width: 0;
 }
 
 .hero-greeting {
-    font-size: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
     font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+}
+
+.hero-greeting-caret {
     color: var(--accent-primary);
-    margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .hero-name {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.1;
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    letter-spacing: 0.01em;
+    margin-bottom: var(--space-4);
+    line-height: 0.92;
 }
 
 .hero-tagline {
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-size: clamp(1rem, 2vw, 1.125rem);
     color: var(--text-secondary);
-    margin-bottom: 2rem;
-    line-height: 1.6;
+    margin-bottom: var(--space-6);
+    line-height: 1.7;
+    max-width: 46ch;
 }
 
 .hero-cta {
     display: flex;
-    gap: 1rem;
+    gap: var(--space-4);
     flex-wrap: wrap;
 }
 
@@ -284,77 +300,324 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 0;
+    /* lets the terminal shrink inside the grid track instead of overflowing */
 }
 
-.hero-image-wrapper {
-    position: relative;
-    width: 350px;
-    height: 350px;
-}
+/* ============================================================================
+   TERMINAL WINDOW / FASTFETCH CARD
+   ============================================================================
+   Reused anywhere a "window" is wanted. The header carries the three window
+   control dots; --term-* tokens in themes.css control the colours.
+   ============================================================================ */
 
-.hero-image-wrapper img {
+.term-window {
     width: 100%;
-    height: 100%;
+    max-width: 30rem;
+    background-color: var(--term-bg);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 24px 60px var(--shadow-color);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+}
+
+.term-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--term-header);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.term-dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.term-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: block;
+}
+
+.term-dot-close {
+    background-color: var(--dot-close);
+}
+
+.term-dot-min {
+    background-color: var(--dot-min);
+}
+
+.term-dot-max {
+    background-color: var(--dot-max);
+}
+
+.term-title {
+    font-size: 0.75rem;
+    /* text-muted is too light against the header surface in light theme */
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.term-body {
+    padding: var(--space-4);
+}
+
+/* A prompt line: user@host:path ❯ command */
+.term-line {
+    margin: 0;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.term-prompt {
+    color: var(--term-prompt);
+    font-weight: 700;
+}
+
+.term-punct {
+    color: var(--text-muted);
+}
+
+.term-path {
+    color: var(--term-path);
+    font-weight: 700;
+}
+
+.term-caret {
+    color: var(--accent-primary);
+    font-weight: 700;
+    margin: 0 0.15em;
+}
+
+.term-cmd {
+    color: var(--text-primary);
+}
+
+/* --- the fetch output itself -------------------------------------------- */
+
+.fetch {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    margin: var(--space-4) 0;
+}
+
+.fetch-logo {
+    position: relative;
+    flex-shrink: 0;
+    width: 96px;
+}
+
+.fetch-logo img {
+    width: 96px;
+    height: 96px;
     object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid var(--accent-primary);
-    box-shadow: 0 20px 60px rgba(255, 105, 120, 0.3);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--accent-fill);
+    /* width/height attributes + fixed box = no layout shift on load */
 }
 
-.hero-image-wrapper::before,
-.hero-image-wrapper::after {
-    content: '';
+/* The sigil sits in the corner the way a distro glyph would */
+.fetch-sigil {
     position: absolute;
-    border-radius: 50%;
-    border: 2px dashed var(--border-color-strong);
+    right: -8px;
+    bottom: -8px;
+    width: 26px;
+    height: 26px;
+    padding: 3px;
+    color: var(--gold);
+    background-color: var(--term-bg);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
 }
 
-.hero-image-wrapper::before {
-    inset: -20px;
-    animation: rotate 20s linear infinite;
+.fetch-rows {
+    margin: 0;
+    min-width: 0;
+    flex: 1;
 }
 
-.hero-image-wrapper::after {
-    inset: -40px;
-    animation: rotate 30s linear infinite reverse;
+.fetch-row {
+    display: flex;
+    gap: 0.5em;
+    align-items: baseline;
 }
 
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
+.fetch-row dt {
+    color: var(--term-key);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.fetch-row dt::after {
+    content: ':';
+    color: var(--text-muted);
+}
+
+.fetch-row dd {
+    margin: 0;
+    color: var(--term-value);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* The one row allowed to wrap - a truncated track title just reads as a bug */
+.fetch-nowplaying {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: normal;
+}
+
+/* Three-bar equalizer. Decorative and silent. */
+.eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 0.85em;
+    flex-shrink: 0;
+}
+
+.eq i {
+    width: 2px;
+    background-color: var(--accent-primary);
+    animation: eq-bounce 900ms ease-in-out infinite;
+}
+
+.eq i:nth-child(1) {
+    height: 60%;
+    animation-delay: 0ms;
+}
+
+.eq i:nth-child(2) {
+    height: 100%;
+    animation-delay: 150ms;
+}
+
+.eq i:nth-child(3) {
+    height: 40%;
+    animation-delay: 300ms;
+}
+
+@keyframes eq-bounce {
+
+    0%,
+    100% {
+        transform: scaleY(0.4);
     }
 
-    to {
-        transform: rotate(360deg);
+    50% {
+        transform: scaleY(1);
     }
 }
 
-@media (max-width: 768px) {
+.eq i {
+    transform-origin: bottom center;
+}
+
+/* fastfetch always signs off with the terminal colour swatches. Here they
+   double as a live preview of the active theme palette. */
+.fetch-swatches {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    list-style: none;
+}
+
+.fetch-swatches li {
+    width: 1.55em;
+    height: 0.7em;
+    border-radius: 1px;
+}
+
+.fetch-swatches li:nth-child(1) {
+    background: var(--bg-surface-2);
+}
+
+.fetch-swatches li:nth-child(2) {
+    background: var(--accent-fill);
+}
+
+.fetch-swatches li:nth-child(3) {
+    background: var(--dot-max);
+}
+
+.fetch-swatches li:nth-child(4) {
+    background: var(--gold-fill);
+}
+
+.fetch-swatches li:nth-child(5) {
+    background: var(--term-path);
+}
+
+.fetch-swatches li:nth-child(6) {
+    background: var(--code-text);
+}
+
+.fetch-swatches li:nth-child(7) {
+    background: var(--term-prompt);
+}
+
+.fetch-swatches li:nth-child(8) {
+    background: var(--text-primary);
+}
+
+/* --- hero layout at small sizes ----------------------------------------- */
+
+@media (max-width: 900px) {
     .hero-content {
         grid-template-columns: 1fr;
-        text-align: center;
+        gap: var(--space-6);
     }
 
     .hero-text {
-        order: 2;
+        order: 1;
         max-width: none;
     }
 
     .hero-image {
-        order: 1;
+        order: 2;
+        justify-content: flex-start;
     }
 
-    .hero-image-wrapper {
-        width: 250px;
-        height: 250px;
+    .term-window {
+        max-width: 100%;
+    }
+}
+
+/* Below this the two fetch columns stop fitting side by side */
+@media (max-width: 420px) {
+    .fetch {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .hero-greeting {
-        justify-content: center;
+    .fetch-rows {
+        width: 100%;
     }
 
-    .hero-cta {
-        justify-content: center;
+    .fetch-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .fetch-row dd {
+        white-space: normal;
     }
 }
 
@@ -377,24 +640,33 @@
 }
 
 .stat-card {
-    padding: 1.5rem;
-    background-color: var(--bg-secondary);
-    border-radius: 12px;
+    padding: var(--space-5);
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
-    text-align: center;
+    border-left: 3px solid var(--accent-fill);
+    text-align: left;
 }
 
 .stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--accent-primary);
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--accent-bright);
     display: block;
+    /* Tabular figures so the GitHub repo count cannot reflow the card */
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
-    margin-top: 0.25rem;
+    margin-top: var(--space-2);
+    display: block;
 }
 
 .about-highlights {
@@ -416,7 +688,8 @@
     align-items: center;
     justify-content: center;
     background-color: var(--highlight-bg);
-    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     flex-shrink: 0;
 }
 
@@ -457,15 +730,22 @@
 
 .contact-email {
     display: inline-block;
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-    font-weight: 600;
-    color: var(--accent-secondary);
-    margin: 1.5rem 0;
-    word-break: break-all;
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 3vw, 1.625rem);
+    font-weight: 700;
+    color: var(--accent-bright);
+    margin: var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    /* break-all mangles the address; break-word keeps it parseable at 320px */
+    overflow-wrap: break-word;
+    word-break: normal;
+    max-width: 100%;
 }
 
 .contact-email:hover {
-    color: var(--accent-secondary-hover);
+    color: var(--accent-primary);
 }
 
 .contact-socials {
@@ -493,15 +773,16 @@
 
 .footer-text {
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
 }
 
 .footer-text a {
-    color: var(--accent-secondary);
+    color: var(--accent-primary);
 }
 
 .footer-text a:hover {
-    color: var(--accent-secondary-hover);
+    color: var(--accent-hover);
 }
 
 /* ============================================================================
@@ -542,9 +823,9 @@
 
 .error-message {
     padding: 1.5rem;
-    background-color: rgba(255, 105, 120, 0.1);
+    background-color: var(--highlight-bg);
     border: 1px solid var(--accent-primary);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     text-align: center;
 }
 

@@ -17,46 +17,124 @@
  * ============================================================================
  */
 
+/* The single shared observer for every reveal on the page, including ones
+   injected later by github-api.js. Null until initScrollAnimations decides
+   animation should happen at all. */
+let revealObserver = null;
+
+/* True when we have decided to show everything immediately: reduced motion,
+   or a browser with no IntersectionObserver. */
+let revealsDisabled = false;
+
 /**
- * Initialize Intersection Observer for scroll animations
- * Elements with .animate-on-scroll class will fade in when visible
+ * Write the stagger index onto each child of a group so CSS can turn it into
+ * a transition delay via `calc(var(--i) * var(--stagger))`.
+ */
+function indexStaggerGroup(group) {
+    Array.from(group.children).forEach((child, i) => {
+        child.style.setProperty('--i', i);
+    });
+}
+
+/**
+ * Hand a set of elements to the observer, or reveal them outright if
+ * animation is off. Content can never be stranded at opacity 0.
+ */
+function observeReveals(elements) {
+    elements.forEach(el => {
+        if (revealsDisabled || !revealObserver) {
+            el.classList.add('is-revealed');
+        } else {
+            revealObserver.observe(el);
+        }
+    });
+}
+
+/**
+ * Register reveal targets inside a subtree that was added to the DOM after
+ * load. Called by github-api.js once the repo cards are rendered.
+ * @param {Element} root - Container whose children should animate in
+ */
+function registerReveals(root) {
+    if (!root) return;
+    if (root.hasAttribute('data-stagger')) indexStaggerGroup(root);
+    observeReveals(Array.from(root.querySelectorAll('[data-reveal]')));
+}
+
+/**
+ * Initialize the scroll reveal choreography.
+ *
+ * Elements opt in with `data-reveal="<variant>"`; see the header of
+ * styles/animations.css for the variant list. A parent carrying
+ * `data-stagger` gets its children indexed into `--i`.
  */
 function initScrollAnimations() {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-stagger]').forEach(indexStaggerGroup);
 
-    if (prefersReducedMotion) {
-        // Make all elements visible immediately
-        document.querySelectorAll('.animate-on-scroll, .animate-fade-left, .animate-fade-right, .animate-scale, .stagger-children')
-            .forEach(el => el.classList.add('visible'));
-        return;
+    const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+    revealsDisabled =
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !('IntersectionObserver' in window);
+
+    if (!revealsDisabled) {
+        revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-revealed');
+                // One-shot: re-animating on every pass is noise, not choreography
+                revealObserver.unobserve(entry.target);
+            });
+        }, {
+            root: null,
+            // Fire a little before the element is fully on screen so the reveal
+            // has finished by the time it reaches comfortable reading position.
+            rootMargin: '0px 0px -12% 0px',
+            threshold: 0.12
+        });
     }
 
-    // Create observer with options
-    const observerOptions = {
-        root: null, // Use viewport
-        rootMargin: '0px 0px -100px 0px', // Trigger slightly before element is fully visible
-        threshold: 0.1 // Trigger when 10% visible
-    };
+    observeReveals(revealTargets);
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Stop observing once animated
-                observer.unobserve(entry.target);
-            }
+    // Anything already on screen at load should not wait for a scroll event
+    // that may never come on a tall viewport or a short page.
+    if (revealObserver) {
+        requestAnimationFrame(() => {
+            revealTargets.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('is-revealed');
+                    revealObserver.unobserve(el);
+                }
+            });
         });
-    }, observerOptions);
+    }
+}
 
-    // Observe all animate-on-scroll elements
-    const animatedElements = document.querySelectorAll(
-        '.animate-on-scroll, .animate-fade-left, .animate-fade-right, .animate-scale, .stagger-children'
-    );
+/**
+ * Drive the status bar clock module.
+ * Ticks once a second and only ever writes textContent, so it cannot cause
+ * layout (the module uses tabular figures and a fixed height).
+ */
+function initStatusBarClock() {
+    const clock = document.getElementById('bar-clock');
+    if (!clock) return;
 
-    animatedElements.forEach(el => observer.observe(el));
+    function tick() {
+        const now = new Date();
+        const time = now.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+        // Composed from parts rather than one toLocaleDateString call, because
+        // locales disagree about whether the weekday or the day number leads.
+        const weekday = now.toLocaleDateString([], { weekday: 'short' });
+        clock.textContent = weekday + ' ' + now.getDate() + '  ' + time;
+        clock.setAttribute('datetime', now.toISOString());
+    }
 
-    console.log('[Animations] Initialized scroll animations for', animatedElements.length, 'elements');
+    tick();
+    setInterval(tick, 1000);
 }
 
 /**
@@ -116,9 +194,10 @@ function initSmoothScroll() {
                 const navLinks = document.querySelector('.nav-links');
                 if (navLinks) navLinks.classList.remove('open');
 
-                // Calculate offset for fixed nav
+                // Clear the fixed status bar
                 const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top
+                    + window.pageYOffset - navHeight;
 
                 window.scrollTo({
                     top: targetPosition,
@@ -165,7 +244,7 @@ function initMobileNav() {
 }
 
 /**
- * Initialize active nav link highlighting based on scroll position
+ * Highlight the current section in the status bar as the focused workspace.
  */
 function initActiveNavHighlight() {
     const sections = document.querySelectorAll('section[id]');
@@ -173,28 +252,70 @@ function initActiveNavHighlight() {
 
     if (sections.length === 0 || navLinks.length === 0) return;
 
-    const observerOptions = {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
+
+            navLinks.forEach(link => {
+                const isCurrent = link.getAttribute('href') === '#' + id;
+                link.classList.toggle('active', isCurrent);
+                // Announce the focused workspace to assistive tech too
+                if (isCurrent) {
+                    link.setAttribute('aria-current', 'true');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+        });
+    }, {
         root: null,
         rootMargin: '-50% 0px -50% 0px', // Middle of viewport
         threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-
-                // Remove active from all links
-                navLinks.forEach(link => link.classList.remove('active'));
-
-                // Add active to matching link
-                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-                if (activeLink) activeLink.classList.add('active');
-            }
-        });
-    }, observerOptions);
+    });
 
     sections.forEach(section => observer.observe(section));
+}
+
+/**
+ * Publish scroll progress (0..1) as --scroll-progress on the status bar,
+ * which renders it as the hairline along its bottom edge.
+ *
+ * The only thing that consumes it is a scaleX, so a scroll never reads layout
+ * back out or writes a geometric property. The document height is measured
+ * once per frame at most.
+ */
+function initScrollProgress() {
+    const bar = document.querySelector('.statusbar');
+    if (!bar) return;
+
+    let ticking = false;
+
+    function update() {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollable > 0
+            ? Math.min(1, Math.max(0, window.scrollY / scrollable))
+            : 0;
+        bar.style.setProperty('--scroll-progress', progress.toFixed(4));
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    // Recompute on resize: the document height changes with the layout
+    window.addEventListener('resize', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    update();
 }
 
 /**
@@ -206,8 +327,8 @@ function initAnimations() {
     initSmoothScroll();
     initMobileNav();
     initActiveNavHighlight();
-
-    console.log('[Animations] All animations initialized');
+    initStatusBarClock();
+    initScrollProgress();
 }
 
 // Export for potential module usage
