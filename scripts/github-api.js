@@ -27,7 +27,7 @@ const GITHUB_USERNAME = 'AndyFerns';
 const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos`;
 const CACHE_KEY = 'github_repos_cache';
 const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour in milliseconds
-const MAX_VISIBLE_REPOS = 9; // Show only 9 repos, rest redirects to GitHub
+const MAX_VISIBLE_REPOS = 16; // Show only 9 repos, rest redirects to GitHub
 
 /**
  * Badge type per language, so a repo card's language pill is coloured on the
